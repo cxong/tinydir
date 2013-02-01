@@ -15,3 +15,15 @@
 *.exe
 *.out
 *.app
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+*.dir/
+cmake_install.cmake
+
+# Visual Studio
+Debug/
+Win32/
+*.sdf
+*.suo
