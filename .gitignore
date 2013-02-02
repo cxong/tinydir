@@ -16,6 +16,7 @@
 *.out
 *.app
 main
+main2
 
 # CMake
 CMakeFiles/
@@ -26,5 +27,6 @@ cmake_install.cmake
 # Visual Studio
 Debug/
 Win32/
+*.opensdf
 *.sdf
 *.suo

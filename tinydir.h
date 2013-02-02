@@ -20,12 +20,27 @@
 #else
 #define _TINYDIR_PATH_EXTRA 0
 #endif
+#define _TINYDIR_FILENAME_MAX 256
+
+typedef struct
+{
+	char path[_TINYDIR_PATH_MAX];
+	char name[_TINYDIR_FILENAME_MAX];
+	int is_dir;
+
+#ifdef _MSC_VER
+#else
+	struct stat _s;
+#endif
+} tinydir_file;
 
 typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
 	int has_next;
+	int n_files;
 
+	tinydir_file *_files;
 #ifdef _MSC_VER
 	HANDLE _h;
 	WIN32_FIND_DATA _f;
@@ -35,26 +50,16 @@ typedef struct
 #endif
 } tinydir_dir;
 
-typedef struct
-{
-	char path[_TINYDIR_PATH_MAX];
-	const char *name;
-	int is_dir;
-
-#ifdef _MSC_VER
-#else
-	struct stat _s;
-#endif
-} tinydir_file;
-
 
 /* declarations */
 
 int tinydir_open(tinydir_dir *dir, const char *path);
+int tinydir_open_sorted(tinydir_dir *dir, const char *path);
 void tinydir_close(tinydir_dir *dir);
 
 int tinydir_next(tinydir_dir *dir);
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
+int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
 
 
 /* definitions*/
@@ -73,6 +78,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	}
 
 	/* initialise dir */
+	dir->_files = NULL;
 #ifdef _MSC_VER
 	dir->_h = INVALID_HANDLE_VALUE;
 #else
@@ -112,6 +118,41 @@ bail:
 	return -1;
 }
 
+int tinydir_open_sorted(tinydir_dir *dir, const char *path)
+{
+	if (tinydir_open(dir, path) == -1)
+	{
+		return -1;
+	}
+
+	dir->n_files = 0;
+	while (dir->has_next)
+	{
+		tinydir_file *p_file;
+		dir->n_files++;
+		dir->_files = (tinydir_file *)realloc(dir->_files, sizeof(tinydir_file)*dir->n_files);
+		if (dir->_files == NULL)
+		{
+			errno = ENOMEM;
+			goto bail;
+		}
+
+		p_file = &dir->_files[dir->n_files - 1];
+		if (tinydir_readfile(dir, p_file) == -1)
+		{
+			goto bail;
+		}
+
+		tinydir_next(dir);
+	}
+
+	return 0;
+
+bail:
+	tinydir_close(dir);
+	return -1;
+}
+
 void tinydir_close(tinydir_dir *dir)
 {
 	if (dir == NULL)
@@ -121,6 +162,12 @@ void tinydir_close(tinydir_dir *dir)
 
 	memset(dir->path, 0, sizeof(dir->path));
 	dir->has_next = 0;
+	dir->n_files = -1;
+	if (dir->_files != NULL)
+	{
+		free(dir->_files);
+	}
+	dir->_files = NULL;
 #ifdef _MSC_VER
 	if (dir->_h != INVALID_HANDLE_VALUE)
 	{
@@ -203,17 +250,28 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		errno = ENAMETOOLONG;
 		return -1;
 	}
+	if (strlen(
+#ifdef _MSC_VER
+			dir->_f.cFileName
+#else
+			dir->_e->d_name
+#endif
+		) >= _TINYDIR_FILENAME_MAX)
+	{
+		errno = ENAMETOOLONG;
+		return -1;
+	}
 
 	strcpy(file->path, dir->path);
 	strcat(file->path, "/");
-	file->name = file->path + strlen(file->path);
-	strcat(file->path,
+	strcpy(file->name,
 #ifdef _MSC_VER
 		dir->_f.cFileName
 #else
 		dir->_e->d_name
 #endif
 	);
+	strcat(file->path, file->name);
 #ifndef _MSC_VER
 	if (stat(file->path, &file->_s) == -1)
 	{
@@ -226,6 +284,24 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 #else
 		S_ISDIR(file->_s.st_mode);
 #endif
+
+	return 0;
+}
+
+int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
+{
+	if (dir == NULL || file == NULL || i < 0)
+	{
+		errno = EINVAL;
+		return -1;
+	}
+	if (i >= dir->n_files)
+	{
+		errno = ENOENT;
+		return -1;
+	}
+
+	memcpy(file, &dir->_files[i], sizeof(tinydir_file));
 
 	return 0;
 }
