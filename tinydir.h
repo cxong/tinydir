@@ -215,7 +215,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 #endif
 	);
 #ifndef _MSC_VER
-	if (stat(file->path, file->_s) == -1)
+	if (stat(file->path, &file->_s) == -1)
 	{
 		return -1;
 	}

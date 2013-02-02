@@ -15,6 +15,7 @@
 *.exe
 *.out
 *.app
+main
 
 # CMake
 CMakeFiles/

@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
 	tinydir_dir dir;
 	int errsv;
-	if (tinydir_open(&dir, "C:\\tinydir") == -1)
+	if (tinydir_open(&dir, ".") == -1)
 	{
 		errsv = errno;
 		fprintf(stderr, "Error opening file: %s\n", strerror(errsv));
