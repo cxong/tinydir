@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
 #include <dirent.h>

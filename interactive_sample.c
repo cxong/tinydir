@@ -13,7 +13,7 @@ int main(void)
 		goto bail;
 	}
 
-	while (1)
+	for (;;)
 	{
 		int i;
 		char input[256];
