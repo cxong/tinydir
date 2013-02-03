@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "tinydir.h"
 
-int main(int argc, char *argv[])
+int main(void)
 {
 	tinydir_dir dir;
 	int errsv;

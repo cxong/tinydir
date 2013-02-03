@@ -17,6 +17,8 @@ set(GENERIC_LIB_SOVERSION "1")
 
 if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+else(MSVC)
+	ADD_DEFINITIONS(-fsigned-char -freg-struct-return -Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Winline -Werror)
 endif(MSVC)
 
 ################################

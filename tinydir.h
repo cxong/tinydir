@@ -342,8 +342,8 @@ int tinydir_open_subdir_n(tinydir_dir *dir, int i)
 
 int _tinydir_file_cmp(const void *a, const void *b)
 {
-	tinydir_file *fa = (tinydir_file *)a;
-	tinydir_file *fb = (tinydir_file *)b;
+	const tinydir_file *fa = (const tinydir_file *)a;
+	const tinydir_file *fb = (const tinydir_file *)b;
 	if (fa->is_dir != fb->is_dir)
 	{
 		return -(fa->is_dir - fb->is_dir);
