@@ -62,6 +62,8 @@ int tinydir_next(tinydir_dir *dir);
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
 int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
 
+int _tinydir_file_cmp(const void *a, const void *b);
+
 
 /* definitions*/
 
@@ -146,6 +148,8 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 
 		tinydir_next(dir);
 	}
+
+	qsort(dir->_files, dir->n_files, sizeof(tinydir_file), _tinydir_file_cmp);
 
 	return 0;
 
@@ -305,6 +309,17 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
 	memcpy(file, &dir->_files[i], sizeof(tinydir_file));
 
 	return 0;
+}
+
+int _tinydir_file_cmp(const void *a, const void *b)
+{
+	tinydir_file *fa = (tinydir_file *)a;
+	tinydir_file *fb = (tinydir_file *)b;
+	if (fa->is_dir != fb->is_dir)
+	{
+		return -(fa->is_dir - fb->is_dir);
+	}
+	return strcmp(fa->name, fb->name);
 }
 
 #endif
