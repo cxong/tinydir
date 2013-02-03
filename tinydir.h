@@ -23,6 +23,10 @@
 #endif
 #define _TINYDIR_FILENAME_MAX 256
 
+#ifdef _MSC_VER
+#define strncasecmp _strnicmp
+#endif
+
 typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
@@ -344,7 +348,7 @@ int _tinydir_file_cmp(const void *a, const void *b)
 	{
 		return -(fa->is_dir - fb->is_dir);
 	}
-	return _strnicmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
+	return strncasecmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
 }
 
 #endif

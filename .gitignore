@@ -15,8 +15,9 @@
 *.exe
 *.out
 *.app
-main
-main2
+interactive_sample
+iterate_sample
+random_access_sample
 
 # CMake
 CMakeFiles/
