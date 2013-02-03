@@ -102,78 +102,115 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named interactive_sample
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main
-.PHONY : main
+interactive_sample: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 interactive_sample
+.PHONY : interactive_sample
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+interactive_sample/fast:
+	$(MAKE) -f CMakeFiles/interactive_sample.dir/build.make CMakeFiles/interactive_sample.dir/build
+.PHONY : interactive_sample/fast
 
 #=============================================================================
-# Target rules for targets named main2
+# Target rules for targets named iterate_sample
 
 # Build rule for target.
-main2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main2
-.PHONY : main2
+iterate_sample: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 iterate_sample
+.PHONY : iterate_sample
 
 # fast build rule for target.
-main2/fast:
-	$(MAKE) -f CMakeFiles/main2.dir/build.make CMakeFiles/main2.dir/build
-.PHONY : main2/fast
+iterate_sample/fast:
+	$(MAKE) -f CMakeFiles/iterate_sample.dir/build.make CMakeFiles/iterate_sample.dir/build
+.PHONY : iterate_sample/fast
 
-main.o: main.c.o
-.PHONY : main.o
+#=============================================================================
+# Target rules for targets named random_access_sample
 
-# target to build an object file
-main.c.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.c.o
-.PHONY : main.c.o
+# Build rule for target.
+random_access_sample: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 random_access_sample
+.PHONY : random_access_sample
 
-main.i: main.c.i
-.PHONY : main.i
+# fast build rule for target.
+random_access_sample/fast:
+	$(MAKE) -f CMakeFiles/random_access_sample.dir/build.make CMakeFiles/random_access_sample.dir/build
+.PHONY : random_access_sample/fast
 
-# target to preprocess a source file
-main.c.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.c.i
-.PHONY : main.c.i
-
-main.s: main.c.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.c.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.c.s
-.PHONY : main.c.s
-
-main2.o: main2.c.o
-.PHONY : main2.o
+interactive_sample.o: interactive_sample.c.o
+.PHONY : interactive_sample.o
 
 # target to build an object file
-main2.c.o:
-	$(MAKE) -f CMakeFiles/main2.dir/build.make CMakeFiles/main2.dir/main2.c.o
-.PHONY : main2.c.o
+interactive_sample.c.o:
+	$(MAKE) -f CMakeFiles/interactive_sample.dir/build.make CMakeFiles/interactive_sample.dir/interactive_sample.c.o
+.PHONY : interactive_sample.c.o
 
-main2.i: main2.c.i
-.PHONY : main2.i
+interactive_sample.i: interactive_sample.c.i
+.PHONY : interactive_sample.i
 
 # target to preprocess a source file
-main2.c.i:
-	$(MAKE) -f CMakeFiles/main2.dir/build.make CMakeFiles/main2.dir/main2.c.i
-.PHONY : main2.c.i
+interactive_sample.c.i:
+	$(MAKE) -f CMakeFiles/interactive_sample.dir/build.make CMakeFiles/interactive_sample.dir/interactive_sample.c.i
+.PHONY : interactive_sample.c.i
 
-main2.s: main2.c.s
-.PHONY : main2.s
+interactive_sample.s: interactive_sample.c.s
+.PHONY : interactive_sample.s
 
 # target to generate assembly for a file
-main2.c.s:
-	$(MAKE) -f CMakeFiles/main2.dir/build.make CMakeFiles/main2.dir/main2.c.s
-.PHONY : main2.c.s
+interactive_sample.c.s:
+	$(MAKE) -f CMakeFiles/interactive_sample.dir/build.make CMakeFiles/interactive_sample.dir/interactive_sample.c.s
+.PHONY : interactive_sample.c.s
+
+iterate_sample.o: iterate_sample.c.o
+.PHONY : iterate_sample.o
+
+# target to build an object file
+iterate_sample.c.o:
+	$(MAKE) -f CMakeFiles/iterate_sample.dir/build.make CMakeFiles/iterate_sample.dir/iterate_sample.c.o
+.PHONY : iterate_sample.c.o
+
+iterate_sample.i: iterate_sample.c.i
+.PHONY : iterate_sample.i
+
+# target to preprocess a source file
+iterate_sample.c.i:
+	$(MAKE) -f CMakeFiles/iterate_sample.dir/build.make CMakeFiles/iterate_sample.dir/iterate_sample.c.i
+.PHONY : iterate_sample.c.i
+
+iterate_sample.s: iterate_sample.c.s
+.PHONY : iterate_sample.s
+
+# target to generate assembly for a file
+iterate_sample.c.s:
+	$(MAKE) -f CMakeFiles/iterate_sample.dir/build.make CMakeFiles/iterate_sample.dir/iterate_sample.c.s
+.PHONY : iterate_sample.c.s
+
+random_access_sample.o: random_access_sample.c.o
+.PHONY : random_access_sample.o
+
+# target to build an object file
+random_access_sample.c.o:
+	$(MAKE) -f CMakeFiles/random_access_sample.dir/build.make CMakeFiles/random_access_sample.dir/random_access_sample.c.o
+.PHONY : random_access_sample.c.o
+
+random_access_sample.i: random_access_sample.c.i
+.PHONY : random_access_sample.i
+
+# target to preprocess a source file
+random_access_sample.c.i:
+	$(MAKE) -f CMakeFiles/random_access_sample.dir/build.make CMakeFiles/random_access_sample.dir/random_access_sample.c.i
+.PHONY : random_access_sample.c.i
+
+random_access_sample.s: random_access_sample.c.s
+.PHONY : random_access_sample.s
+
+# target to generate assembly for a file
+random_access_sample.c.s:
+	$(MAKE) -f CMakeFiles/random_access_sample.dir/build.make CMakeFiles/random_access_sample.dir/random_access_sample.c.s
+.PHONY : random_access_sample.c.s
 
 # Help Target
 help:
@@ -182,15 +219,19 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... main"
-	@echo "... main2"
+	@echo "... interactive_sample"
+	@echo "... iterate_sample"
+	@echo "... random_access_sample"
 	@echo "... rebuild_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... main2.o"
-	@echo "... main2.i"
-	@echo "... main2.s"
+	@echo "... interactive_sample.o"
+	@echo "... interactive_sample.i"
+	@echo "... interactive_sample.s"
+	@echo "... iterate_sample.o"
+	@echo "... iterate_sample.i"
+	@echo "... iterate_sample.s"
+	@echo "... random_access_sample.o"
+	@echo "... random_access_sample.i"
+	@echo "... random_access_sample.s"
 .PHONY : help
 
 
