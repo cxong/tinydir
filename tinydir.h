@@ -32,6 +32,7 @@ typedef struct
 	char path[_TINYDIR_PATH_MAX];
 	char name[_TINYDIR_FILENAME_MAX];
 	int is_dir;
+	int is_reg;
 
 #ifdef _MSC_VER
 #else
@@ -293,6 +294,12 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
 #else
 		S_ISDIR(file->_s.st_mode);
+#endif
+	file->is_reg =
+#ifdef _MSC_VER
+		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NORMAL);
+#else
+		S_ISREG(file->_s.st_mode);
 #endif
 
 	return 0;
