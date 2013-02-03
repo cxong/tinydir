@@ -6,7 +6,7 @@ Lightweight, portable and easy to integrate C directory and file reader.
 Example
 =======
 
-Error checking omitted:
+There are two methods. Error checking omitted:
 
 ```C
 tinydir_dir dir;
@@ -30,6 +30,27 @@ while (dir.has_next)
 tinydir_close(&dir);
 ```
 
+```C
+tinydir_dir dir;
+int i;
+tinydir_open_sorted(&dir, "/path/to/dir");
+
+for (i = 0; i < dir.n_files; i++)
+{
+	tinydir_file file;
+	tinydir_readfile_n(&dir, &file, i);
+
+	printf("%s", file.name);
+	if (file.is_dir)
+	{
+		printf("/");
+	}
+	printf("\n");
+}
+
+tinydir_close(&dir);
+```
+
 Language
 ========
 
@@ -48,6 +69,6 @@ BSD.
 Known Limitations
 =================
 
-Not threadsafe
-Limited path and filename sizes
-No wide char support
+- Not threadsafe
+- Limited path and filename sizes
+- No wide char support

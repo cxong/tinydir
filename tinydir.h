@@ -61,6 +61,7 @@ void tinydir_close(tinydir_dir *dir);
 int tinydir_next(tinydir_dir *dir);
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
 int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
+int tinydir_open_subdir_n(tinydir_dir *dir, int i);
 
 int _tinydir_file_cmp(const void *a, const void *b);
 
@@ -311,6 +312,30 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
 	return 0;
 }
 
+int tinydir_open_subdir_n(tinydir_dir *dir, int i)
+{
+	char path[_TINYDIR_PATH_MAX];
+	if (dir == NULL || i < 0)
+	{
+		errno = EINVAL;
+		return -1;
+	}
+	if (i >= dir->n_files || !dir->_files[i].is_dir)
+	{
+		errno = ENOENT;
+		return -1;
+	}
+
+	strcpy(path, dir->_files[i].path);
+	tinydir_close(dir);
+	if (tinydir_open_sorted(dir, path) == -1)
+	{
+		return -1;
+	}
+
+	return 0;
+}
+
 int _tinydir_file_cmp(const void *a, const void *b)
 {
 	tinydir_file *fa = (tinydir_file *)a;
@@ -319,7 +344,7 @@ int _tinydir_file_cmp(const void *a, const void *b)
 	{
 		return -(fa->is_dir - fb->is_dir);
 	}
-	return strcmp(fa->name, fb->name);
+	return _strnicmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
 }
 
 #endif
