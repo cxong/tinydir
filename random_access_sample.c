@@ -4,12 +4,10 @@
 int main(void)
 {
 	tinydir_dir dir;
-	int errsv;
 	int i;
 	if (tinydir_open_sorted(&dir, ".") == -1)
 	{
-		errsv = errno;
-		fprintf(stderr, "Error opening file: %s\n", strerror(errsv));
+		perror("Error opening file");
 		goto bail;
 	}
 
@@ -18,8 +16,7 @@ int main(void)
 		tinydir_file file;
 		if (tinydir_readfile_n(&dir, &file, i) == -1)
 		{
-			errsv = errno;
-			fprintf(stderr, "Error getting file: %s\n", strerror(errsv));
+			perror("Error getting file");
 			goto bail;
 		}
 
