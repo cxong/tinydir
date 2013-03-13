@@ -53,9 +53,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef _MSC_VER
-#define _TINYDIR_INLINE __inline
+#define _TINYDIR_FUNC static __inline
 #else
-#define _TINYDIR_INLINE inline
+#define _TINYDIR_FUNC static __inline__
 #endif
 
 typedef struct
@@ -90,21 +90,30 @@ typedef struct
 
 /* declarations */
 
+_TINYDIR_FUNC
 int tinydir_open(tinydir_dir *dir, const char *path);
+_TINYDIR_FUNC
 int tinydir_open_sorted(tinydir_dir *dir, const char *path);
+_TINYDIR_FUNC
 void tinydir_close(tinydir_dir *dir);
 
+_TINYDIR_FUNC
 int tinydir_next(tinydir_dir *dir);
+_TINYDIR_FUNC
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
+_TINYDIR_FUNC
 int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
+_TINYDIR_FUNC
 int tinydir_open_subdir_n(tinydir_dir *dir, int i);
 
+_TINYDIR_FUNC
 int _tinydir_file_cmp(const void *a, const void *b);
 
 
 /* definitions*/
 
-_TINYDIR_INLINE int tinydir_open(tinydir_dir *dir, const char *path)
+_TINYDIR_FUNC
+int tinydir_open(tinydir_dir *dir, const char *path)
 {
 	if (dir == NULL || path == NULL || strlen(path) == 0)
 	{
@@ -158,7 +167,8 @@ bail:
 	return -1;
 }
 
-_TINYDIR_INLINE int tinydir_open_sorted(tinydir_dir *dir, const char *path)
+_TINYDIR_FUNC
+int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 {
 	if (tinydir_open(dir, path) == -1)
 	{
@@ -195,7 +205,8 @@ bail:
 	return -1;
 }
 
-_TINYDIR_INLINE void tinydir_close(tinydir_dir *dir)
+_TINYDIR_FUNC
+void tinydir_close(tinydir_dir *dir)
 {
 	if (dir == NULL)
 	{
@@ -226,7 +237,8 @@ _TINYDIR_INLINE void tinydir_close(tinydir_dir *dir)
 #endif
 }
 
-_TINYDIR_INLINE int tinydir_next(tinydir_dir *dir)
+_TINYDIR_FUNC
+int tinydir_next(tinydir_dir *dir)
 {
 	if (dir == NULL)
 	{
@@ -262,7 +274,8 @@ _TINYDIR_INLINE int tinydir_next(tinydir_dir *dir)
 	return 0;
 }
 
-_TINYDIR_INLINE int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
+_TINYDIR_FUNC
+int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 {
 	if (dir == NULL || file == NULL)
 	{
@@ -336,7 +349,8 @@ _TINYDIR_INLINE int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 	return 0;
 }
 
-_TINYDIR_INLINE int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
+_TINYDIR_FUNC
+int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
 {
 	if (dir == NULL || file == NULL || i < 0)
 	{
@@ -354,7 +368,8 @@ _TINYDIR_INLINE int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *fil
 	return 0;
 }
 
-_TINYDIR_INLINE int tinydir_open_subdir_n(tinydir_dir *dir, int i)
+_TINYDIR_FUNC
+int tinydir_open_subdir_n(tinydir_dir *dir, int i)
 {
 	char path[_TINYDIR_PATH_MAX];
 	if (dir == NULL || i < 0)
@@ -378,7 +393,8 @@ _TINYDIR_INLINE int tinydir_open_subdir_n(tinydir_dir *dir, int i)
 	return 0;
 }
 
-_TINYDIR_INLINE int _tinydir_file_cmp(const void *a, const void *b)
+_TINYDIR_FUNC
+int _tinydir_file_cmp(const void *a, const void *b)
 {
 	const tinydir_file *fa = (const tinydir_file *)a;
 	const tinydir_file *fb = (const tinydir_file *)b;
