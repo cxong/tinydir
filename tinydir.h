@@ -27,6 +27,12 @@
 #define strncasecmp _strnicmp
 #endif
 
+#ifdef _MSC_VER
+#define _TINYDIR_INLINE __inline
+#else
+#define _TINYDIR_INLINE __inline__
+#endif
+
 typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
@@ -73,7 +79,7 @@ int _tinydir_file_cmp(const void *a, const void *b);
 
 /* definitions*/
 
-int tinydir_open(tinydir_dir *dir, const char *path)
+_TINYDIR_INLINE int tinydir_open(tinydir_dir *dir, const char *path)
 {
 	if (dir == NULL || path == NULL || strlen(path) == 0)
 	{
@@ -127,7 +133,7 @@ bail:
 	return -1;
 }
 
-int tinydir_open_sorted(tinydir_dir *dir, const char *path)
+_TINYDIR_INLINE int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 {
 	if (tinydir_open(dir, path) == -1)
 	{
@@ -164,7 +170,7 @@ bail:
 	return -1;
 }
 
-void tinydir_close(tinydir_dir *dir)
+_TINYDIR_INLINE void tinydir_close(tinydir_dir *dir)
 {
 	if (dir == NULL)
 	{
@@ -195,7 +201,7 @@ void tinydir_close(tinydir_dir *dir)
 #endif
 }
 
-int tinydir_next(tinydir_dir *dir)
+_TINYDIR_INLINE int tinydir_next(tinydir_dir *dir)
 {
 	if (dir == NULL)
 	{
@@ -231,7 +237,7 @@ int tinydir_next(tinydir_dir *dir)
 	return 0;
 }
 
-int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
+_TINYDIR_INLINE int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 {
 	if (dir == NULL || file == NULL)
 	{
@@ -305,7 +311,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 	return 0;
 }
 
-int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
+_TINYDIR_INLINE int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
 {
 	if (dir == NULL || file == NULL || i < 0)
 	{
@@ -323,7 +329,7 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
 	return 0;
 }
 
-int tinydir_open_subdir_n(tinydir_dir *dir, int i)
+_TINYDIR_INLINE int tinydir_open_subdir_n(tinydir_dir *dir, int i)
 {
 	char path[_TINYDIR_PATH_MAX];
 	if (dir == NULL || i < 0)
@@ -347,7 +353,7 @@ int tinydir_open_subdir_n(tinydir_dir *dir, int i)
 	return 0;
 }
 
-int _tinydir_file_cmp(const void *a, const void *b)
+_TINYDIR_INLINE int _tinydir_file_cmp(const void *a, const void *b)
 {
 	const tinydir_file *fa = (const tinydir_file *)a;
 	const tinydir_file *fb = (const tinydir_file *)b;
