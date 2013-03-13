@@ -1,7 +1,7 @@
 TinyDir
 =======
 
-Lightweight, portable and easy to integrate C directory and file reader.
+Lightweight, portable and easy to integrate C directory and file reader. TinyDir wraps dirent for POSIX and FindFirstFile for Windows.
 
 Example
 =======

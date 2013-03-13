@@ -4,16 +4,13 @@
 int main(void)
 {
 	tinydir_dir dir;
-	int errsv;
-
 	if (tinydir_open_sorted(&dir, ".") == -1)
 	{
-		errsv = errno;
-		fprintf(stderr, "Error opening file: %s\n", strerror(errsv));
+		perror("Error opening file");
 		goto bail;
 	}
 
-	while (1)
+	for (;;)
 	{
 		int i;
 		char input[256];
@@ -22,8 +19,7 @@ int main(void)
 			tinydir_file file;
 			if (tinydir_readfile_n(&dir, &file, i) == -1)
 			{
-				errsv = errno;
-				fprintf(stderr, "Error getting file: %s\n", strerror(errsv));
+				perror("Error getting file");
 				goto bail;
 			}
 
@@ -51,8 +47,7 @@ int main(void)
 			{
 				if (tinydir_open_subdir_n(&dir, choice) == -1)
 				{
-					errsv = errno;
-					fprintf(stderr, "Error opening subdirectory: %s\n", strerror(errsv));
+					perror("Error opening subdirectory");
 					goto bail;
 				}
 			}

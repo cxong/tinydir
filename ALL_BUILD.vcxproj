@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGUID>{D527B3E8-FE05-4F90-B5D7-F23FF3CB4DD0}</ProjectGUID>
+    <ProjectGUID>{54931374-A561-46D9-8131-19DFC1A41049}</ProjectGUID>
     <Keyword>Win32Proj</Keyword>
     <Platform>Win32</Platform>
     <ProjectName>ALL_BUILD</ProjectName>
@@ -203,16 +203,16 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:/tinydir/ZERO_CHECK.vcxproj">
-      <Project>EE6A26DD-FDB8-4641-B1DC-C76BC5D6AA24</Project>
+      <Project>FC9BF78F-A827-4ADD-AB89-D69BB9C12B41</Project>
     </ProjectReference>
     <ProjectReference Include="C:/tinydir/interactive_sample.vcxproj">
-      <Project>539F78C7-AB10-4443-A327-09291D1E8BE8</Project>
+      <Project>180E4286-A00D-4A47-A457-E225E0981324</Project>
     </ProjectReference>
     <ProjectReference Include="C:/tinydir/iterate_sample.vcxproj">
-      <Project>1C865BD4-6718-48F1-BC2B-2FF39B7C0545</Project>
+      <Project>0C07DE65-07DD-4411-BFF3-F17EEB18C3C6</Project>
     </ProjectReference>
     <ProjectReference Include="C:/tinydir/random_access_sample.vcxproj">
-      <Project>71FA1972-2D2B-4A6F-B20F-CF02DD1A08C4</Project>
+      <Project>994A1DEA-1156-4541-943F-A6025FD2F6C1</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
