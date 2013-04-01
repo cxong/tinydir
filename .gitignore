@@ -31,3 +31,4 @@ Win32/
 *.opensdf
 *.sdf
 *.suo
+*.vcxproj.user

@@ -194,7 +194,10 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 			goto bail;
 		}
 
-		tinydir_next(dir);
+		if (tinydir_next(dir) == -1)
+		{
+			goto bail;
+		}
 	}
 
 	qsort(dir->_files, dir->n_files, sizeof(tinydir_file), _tinydir_file_cmp);
