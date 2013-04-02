@@ -263,17 +263,16 @@ int tinydir_next(tinydir_dir *dir)
 #endif
 	{
 		dir->has_next = 0;
-	}
-
 #ifdef _MSC_VER
-	if (GetLastError() != ERROR_SUCCESS &&
-		GetLastError() != ERROR_NO_MORE_FILES)
-	{
-		tinydir_close(dir);
-		errno = EIO;
-		return -1;
-	}
+		if (GetLastError() != ERROR_SUCCESS &&
+			GetLastError() != ERROR_NO_MORE_FILES)
+		{
+			tinydir_close(dir);
+			errno = EIO;
+			return -1;
+		}
 #endif
+	}
 
 	return 0;
 }
