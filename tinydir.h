@@ -345,7 +345,15 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 #endif
 	file->is_reg =
 #ifdef _MSC_VER
-		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NORMAL);
+		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NORMAL) ||
+		(
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DEVICE) &&
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_ENCRYPTED) &&
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM) &&
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA) &&
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) &&
+			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY));
 #else
 		S_ISREG(file->_s.st_mode);
 #endif
