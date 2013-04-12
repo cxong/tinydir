@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "tinydir.h"
+#include <tinydir.h>
 
 int main(void)
 {

@@ -3,6 +3,8 @@ cmake_policy(VERSION 2.6)
 
 project(tinydir C)
 
+INCLUDE_DIRECTORIES(..)
+
 ################################
 # Add definitions
 

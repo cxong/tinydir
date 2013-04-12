@@ -32,3 +32,6 @@ Win32/
 *.sdf
 *.suo
 *.vcxproj.user
+*.vcxproj
+*.vcxproj.filters
+*.sln
