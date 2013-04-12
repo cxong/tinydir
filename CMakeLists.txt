@@ -3,23 +3,14 @@ cmake_policy(VERSION 2.6)
 
 project(tinydir C)
 
-#CMAKE_BUILD_TOOL
-
-################################
-# set lib version here
-
-set(GENERIC_LIB_VERSION "1.0.0")
-set(GENERIC_LIB_SOVERSION "1")
-
-
 ################################
 # Add definitions
 
 if(MSVC)
 	add_definitions(-W4 -WX)
-else(MSVC)
+else()
 	add_definitions(-fsigned-char -freg-struct-return -Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Winline -Werror)
-endif(MSVC)
+endif()
 
 ################################
 # Add targets
