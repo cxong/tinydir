@@ -349,8 +349,12 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DEVICE) &&
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_ENCRYPTED) &&
+#ifdef FILE_ATTRIBUTE_INTEGRITY_STREAM
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM) &&
+#endif
+#ifdef FILE_ATTRIBUTE_NO_SCRUB_DATA
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA) &&
+#endif
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) &&
 			!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY));
 #else
