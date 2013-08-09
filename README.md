@@ -64,7 +64,7 @@ POSIX and Windows supported. Open to the possibility of supporting other platfor
 License
 =======
 
-BSD.
+Simplified BSD.
 
 Known Limitations
 =================
