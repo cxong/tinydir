@@ -51,6 +51,8 @@ for (i = 0; i < dir.n_files; i++)
 tinydir_close(&dir);
 ```
 
+See the `/samples` folder for more examples, including an interactive command-line directory navigator.
+
 Language
 ========
 
