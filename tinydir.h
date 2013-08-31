@@ -51,6 +51,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef _MSC_VER
 #define strncasecmp _strnicmp
+#else
+#include <strings.h>
 #endif
 
 #ifdef _MSC_VER
