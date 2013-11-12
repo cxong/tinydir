@@ -74,3 +74,7 @@ Known Limitations
 - Not threadsafe
 - Limited path and filename sizes
 - No wide char support
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cxong/tinydir/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
