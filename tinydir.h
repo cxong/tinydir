@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013, Cong Xu
+Copyright (c) 2013-2014, Cong Xu
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
 	int has_next;
-	int n_files;
+	size_t n_files;
 
 	tinydir_file *_files;
 #ifdef _MSC_VER
@@ -105,9 +105,9 @@ int tinydir_next(tinydir_dir *dir);
 _TINYDIR_FUNC
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
 _TINYDIR_FUNC
-int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
+int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, size_t i);
 _TINYDIR_FUNC
-int tinydir_open_subdir_n(tinydir_dir *dir, int i);
+int tinydir_open_subdir_n(tinydir_dir *dir, size_t i);
 
 _TINYDIR_FUNC
 int _tinydir_file_cmp(const void *a, const void *b);
@@ -173,22 +173,38 @@ bail:
 _TINYDIR_FUNC
 int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 {
+	/* Count the number of files first, to pre-allocate the files array */
+	size_t n_files = 0;
+	if (tinydir_open(dir, path) == -1)
+	{
+		return -1;
+	}
+	while (dir->has_next)
+	{
+		n_files++;
+		if (tinydir_next(dir) == -1)
+		{
+			goto bail;
+		}
+	}
+	tinydir_close(dir);
+
 	if (tinydir_open(dir, path) == -1)
 	{
 		return -1;
 	}
 
 	dir->n_files = 0;
+	dir->_files = (tinydir_file *)malloc(sizeof *dir->_files * n_files);
+	if (dir->_files == NULL)
+	{
+		errno = ENOMEM;
+		goto bail;
+	}
 	while (dir->has_next)
 	{
 		tinydir_file *p_file;
 		dir->n_files++;
-		dir->_files = (tinydir_file *)realloc(dir->_files, sizeof(tinydir_file)*dir->n_files);
-		if (dir->_files == NULL)
-		{
-			errno = ENOMEM;
-			goto bail;
-		}
 
 		p_file = &dir->_files[dir->n_files - 1];
 		if (tinydir_readfile(dir, p_file) == -1)
@@ -199,6 +215,13 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 		if (tinydir_next(dir) == -1)
 		{
 			goto bail;
+		}
+
+		/* Just in case the number of files has changed between the first and
+		second reads, terminate without writing into unallocated memory */
+		if (dir->n_files == n_files)
+		{
+			break;
 		}
 	}
 
@@ -221,7 +244,7 @@ void tinydir_close(tinydir_dir *dir)
 
 	memset(dir->path, 0, sizeof(dir->path));
 	dir->has_next = 0;
-	dir->n_files = -1;
+	dir->n_files = 0;
 	if (dir->_files != NULL)
 	{
 		free(dir->_files);
@@ -367,7 +390,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 }
 
 _TINYDIR_FUNC
-int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
+int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, size_t i)
 {
 	if (dir == NULL || file == NULL || i < 0)
 	{
@@ -386,7 +409,7 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
 }
 
 _TINYDIR_FUNC
-int tinydir_open_subdir_n(tinydir_dir *dir, int i)
+int tinydir_open_subdir_n(tinydir_dir *dir, size_t i)
 {
 	char path[_TINYDIR_PATH_MAX];
 	if (dir == NULL || i < 0)
