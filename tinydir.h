@@ -392,7 +392,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 _TINYDIR_FUNC
 int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, size_t i)
 {
-	if (dir == NULL || file == NULL || i < 0)
+	if (dir == NULL || file == NULL)
 	{
 		errno = EINVAL;
 		return -1;
@@ -412,7 +412,7 @@ _TINYDIR_FUNC
 int tinydir_open_subdir_n(tinydir_dir *dir, size_t i)
 {
 	char path[_TINYDIR_PATH_MAX];
-	if (dir == NULL || i < 0)
+	if (dir == NULL)
 	{
 		errno = EINVAL;
 		return -1;
