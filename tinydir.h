@@ -50,12 +50,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _TINYDIR_FILENAME_MAX 256
 
 #ifdef _MSC_VER
-#define strncasecmp _strnicmp
-#else
-#include <strings.h>
-#endif
-
-#ifdef _MSC_VER
 #define _TINYDIR_FUNC static __inline
 #else
 #define _TINYDIR_FUNC static __inline__
@@ -442,7 +436,7 @@ int _tinydir_file_cmp(const void *a, const void *b)
 	{
 		return -(fa->is_dir - fb->is_dir);
 	}
-	return strncasecmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
+	return strncmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
 }
 
 #endif
