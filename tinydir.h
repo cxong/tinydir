@@ -59,6 +59,7 @@ typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
 	char name[_TINYDIR_FILENAME_MAX];
+	char * extension;
 	int is_dir;
 	int is_reg;
 
@@ -355,6 +356,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		return -1;
 	}
 #endif
+	file->extension = strrchr(file->name, '.') + 1;
 	file->is_dir =
 #ifdef _MSC_VER
 		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
