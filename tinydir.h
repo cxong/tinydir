@@ -357,6 +357,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 	}
 #endif
 	file->extension = strrchr(file->name, '.') + 1;
+	file->extension = (file->extension == NULL || file->extension == (char *)0x1) ? "" : file->extension;
 	file->is_dir =
 #ifdef _MSC_VER
 		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
