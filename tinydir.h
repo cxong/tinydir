@@ -359,10 +359,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 	}
 #endif
 	if((tmp = strrchr(file->name, '.')) == NULL)
-	{
-		file->extension = (char *)malloc(sizeof(char));;
-		file->extension[0] = '\0';
-	}
+		file->extension = &(file->name[strlen(file->name) - 1]);
 	else
 		file->extension = tmp + 1;
 
