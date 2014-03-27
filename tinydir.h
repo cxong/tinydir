@@ -300,6 +300,8 @@ int tinydir_next(tinydir_dir *dir)
 _TINYDIR_FUNC
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 {
+	char * tmp;
+
 	if (dir == NULL || file == NULL)
 	{
 		errno = EINVAL;
@@ -356,8 +358,14 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		return -1;
 	}
 #endif
-	file->extension = strrchr(file->name, '.') + 1;
-	file->extension = (file->extension == NULL || file->extension == (char *)0x1) ? "" : file->extension;
+	if((tmp = strrchr(file->name, '.')) == NULL)
+	{
+		file->extension = (char *)malloc(sizeof(char));;
+		file->extension[0] = '\0';
+	}
+	else
+		file->extension = tmp + 1;
+
 	file->is_dir =
 #ifdef _MSC_VER
 		!!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
