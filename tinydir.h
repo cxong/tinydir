@@ -105,6 +105,8 @@ _TINYDIR_FUNC
 int tinydir_open_subdir_n(tinydir_dir *dir, size_t i);
 
 _TINYDIR_FUNC
+void _tinydir_get_ext(tinydir_file *file);
+_TINYDIR_FUNC
 int _tinydir_file_cmp(const void *a, const void *b);
 
 
@@ -300,8 +302,6 @@ int tinydir_next(tinydir_dir *dir)
 _TINYDIR_FUNC
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 {
-	char *period;
-
 	if (dir == NULL || file == NULL)
 	{
 		errno = EINVAL;
@@ -358,14 +358,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		return -1;
 	}
 #endif
-	if ((period = strrchr(file->name, '.')) == NULL)
-	{
-		file->extension = &(file->name[strlen(file->name)]);
-	}
-	else
-	{
-		file->extension = period + 1;
-	}
+	_tinydir_get_ext(file);
 
 	file->is_dir =
 #ifdef _MSC_VER
@@ -410,6 +403,7 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, size_t i)
 	}
 
 	memcpy(file, &dir->_files[i], sizeof(tinydir_file));
+	_tinydir_get_ext(file);
 
 	return 0;
 }
@@ -437,6 +431,20 @@ int tinydir_open_subdir_n(tinydir_dir *dir, size_t i)
 	}
 
 	return 0;
+}
+
+_TINYDIR_FUNC
+void _tinydir_get_ext(tinydir_file *file)
+{
+	char *period = strrchr(file->name, '.');
+	if (period == NULL)
+	{
+		file->extension = &(file->name[strlen(file->name)]);
+	}
+	else
+	{
+		file->extension = period + 1;
+	}
 }
 
 _TINYDIR_FUNC
