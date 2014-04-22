@@ -12,7 +12,7 @@ int main(void)
 
 	for (;;)
 	{
-		int i;
+		size_t i;
 		char input[256];
 		for (i = 0; i < dir.n_files; i++)
 		{
@@ -25,7 +25,7 @@ int main(void)
 
 			if (file.is_dir)
 			{
-				printf("[%d] ", i);
+				printf("[%zu] ", i);
 			}
 			printf("%s", file.name);
 			if (file.is_dir)
@@ -43,7 +43,7 @@ int main(void)
 		else
 		{
 			int choice = atoi(input);
-			if (choice >= 0 && choice < dir.n_files)
+			if (choice >= 0 && (size_t)choice < dir.n_files)
 			{
 				if (tinydir_open_subdir_n(&dir, choice) == -1)
 				{
