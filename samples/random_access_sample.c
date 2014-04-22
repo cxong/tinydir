@@ -4,7 +4,7 @@
 int main(void)
 {
 	tinydir_dir dir;
-	int i;
+	size_t i;
 	if (tinydir_open_sorted(&dir, ".") == -1)
 	{
 		perror("Error opening file");
