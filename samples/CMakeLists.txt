@@ -10,6 +10,8 @@ INCLUDE_DIRECTORIES(..)
 
 if(MSVC)
 	add_definitions(-W4 -WX)
+elseif(APPLE)
+    add_definitions(-fsigned-char -Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Winline -Werror)
 else()
 	add_definitions(-fsigned-char -freg-struct-return -Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Winline -Werror)
 endif()
