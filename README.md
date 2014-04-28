@@ -1,5 +1,6 @@
 TinyDir
 =======
+[![Build Status](https://travis-ci.org/cxong/tinydir.svg?branch=master)](https://travis-ci.org/cxong/tinydir)
 
 Lightweight, portable and easy to integrate C directory and file reader. TinyDir wraps dirent for POSIX and FindFirstFile for Windows.
 
