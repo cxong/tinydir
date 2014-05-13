@@ -16,6 +16,7 @@ endif()
 
 ################################
 # Add targets
+add_executable(file_open_sample file_open_sample.c)
 add_executable(iterate_sample iterate_sample.c)
 add_executable(random_access_sample random_access_sample.c)
 add_executable(interactive_sample interactive_sample.c)
