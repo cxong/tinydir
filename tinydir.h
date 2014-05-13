@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma warning (disable : 4996)
 #else
 #include <dirent.h>
+#include <libgen.h>
 #include <sys/stat.h>
 #endif
 
@@ -431,6 +432,91 @@ int tinydir_open_subdir_n(tinydir_dir *dir, size_t i)
 	}
 
 	return 0;
+}
+
+/* Open a single file given its path */
+_TINYDIR_FUNC
+int tinydir_file_open(tinydir_file *file, const char *path)
+{
+	tinydir_dir dir;
+	int result = 0;
+	int found = 0;
+	char dir_name_buf[_TINYDIR_PATH_MAX];
+	char file_name_buf[_TINYDIR_FILENAME_MAX];
+	char *dir_name;
+	char *base_name;
+#ifdef _MSC_VER
+	char drive_buf[_TINYDIR_PATH_MAX];
+	char ext_buf[_TINYDIR_FILENAME_MAX];
+#endif
+	
+	if (file == NULL || path == NULL || strlen(path) == 0)
+	{
+		errno = EINVAL;
+		return -1;
+	}
+	if (strlen(path) + _TINYDIR_PATH_EXTRA >= _TINYDIR_PATH_MAX)
+	{
+		errno = ENAMETOOLONG;
+		return -1;
+	}
+
+	/* Get the parent path */
+#ifdef _MSC_VER
+	if (_splitpath_s(
+			path,
+			drive_buf, sizeof drive_buf,
+			dir_name_buf, sizeof dir_name_buf,
+			file_name_buf, sizeof file_name_buf,
+			ext_buf, sizeof ext_buf))
+	{
+		errno = EINVAL;
+		return -1;
+	}
+	/* Concatenate the drive letter and dir name to form full dir name */
+	strcat(drive_buf, dir_name_buf);
+	dir_name = drive_buf;
+	/* Concatenate the file name and extension to form base name */
+	strcat(file_name_buf, ext_buf);
+	base_name = file_name_buf;
+#else
+	strcpy(dir_name_buf, path);
+	dir_name = dirname(dir_name_buf);
+	strcpy(file_name_buf, path);
+	base_name = basename(file_name_buf);
+#endif
+	
+	/* Open the parent directory */
+	if (tinydir_open(&dir, dir_name) == -1)
+	{
+		return -1;
+	}
+
+	/* Read through the parent directory and look for the file */
+	while (dir.has_next)
+	{
+		if (tinydir_readfile(&dir, file) == -1)
+		{
+			result = -1;
+			goto bail;
+		}
+		if (strcmp(file->name, base_name) == 0)
+		{
+			/* File found */
+			found = 1;
+			goto bail;
+		}
+		tinydir_next(&dir);
+	}
+	if (!found)
+	{
+		result = -1;
+		errno = ENOENT;
+	}
+	
+bail:
+	tinydir_close(&dir);
+	return result;
 }
 
 _TINYDIR_FUNC
