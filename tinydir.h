@@ -116,6 +116,7 @@ int _tinydir_file_cmp(const void *a, const void *b);
 _TINYDIR_FUNC
 int tinydir_open(tinydir_dir *dir, const char *path)
 {
+	WCHAR    str[_TINYDIR_PATH_MAX] = {L""};
 	if (dir == NULL || path == NULL || strlen(path) == 0)
 	{
 		errno = EINVAL;
@@ -139,7 +140,10 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	strcpy(dir->path, path);
 #ifdef _MSC_VER
 	strcat(dir->path, "\\*");
-	dir->_h = FindFirstFile(dir->path, &dir->_f);
+	MultiByteToWideChar(0, 0, dir->path, strlen(dir->path), str, strlen(dir->path) + 1);
+	LPCWSTR cstr = str;		//Variable created here :'(
+	//dir->_h = FindFirstFile(dir->path, &dir->_f);
+	dir->_h = FindFirstFile(cstr, &dir->_f);
 	dir->path[strlen(dir->path) - 2] = '\0';
 	if (dir->_h == INVALID_HANDLE_VALUE)
 #else
@@ -318,10 +322,12 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		return -1;
 	}
 	if (strlen(dir->path) +
-		strlen(
+		//strlen(
 #ifdef _MSC_VER
+		wcslen(
 			dir->_f.cFileName
 #else
+		strlen(
 			dir->_e->d_name
 #endif
 		) + 1 + _TINYDIR_PATH_EXTRA >=
@@ -331,10 +337,12 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		errno = ENAMETOOLONG;
 		return -1;
 	}
-	if (strlen(
+	//if (strlen(
 #ifdef _MSC_VER
+	if (wcslen(
 			dir->_f.cFileName
 #else
+	if(strlen(
 			dir->_e->d_name
 #endif
 		) >= _TINYDIR_FILENAME_MAX)
@@ -345,10 +353,16 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 
 	strcpy(file->path, dir->path);
 	strcat(file->path, "/");
-	strcpy(file->name,
+	//strcpy(file->name,
 #ifdef _MSC_VER
-		dir->_f.cFileName
+	char    str[_TINYDIR_FILENAME_MAX] = {""};
+	WideCharToMultiByte(0, 0, dir->_f.cFileName, wcslen(dir->_f.cFileName), str, wcslen(dir->_f.cFileName) + 1, NULL, NULL);
+	const char* cstr = str;		// Variable created here :'(
+	strcpy(file->name,
+		//dir->_f.cFileName
+		cstr
 #else
+	strcpy(file->name, // Line added
 		dir->_e->d_name
 #endif
 	);
