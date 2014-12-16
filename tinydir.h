@@ -31,7 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#ifdef _MSC_VER
 #pragma warning (disable : 4996)
+#endif
 #else
 #include <dirent.h>
 #include <libgen.h>
@@ -50,7 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #define _TINYDIR_FILENAME_MAX 256
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define _TINYDIR_FUNC static __inline
 #else
 #define _TINYDIR_FUNC static __inline__
