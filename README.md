@@ -4,8 +4,6 @@ TinyDir
 
 Lightweight, portable and easy to integrate C directory and file reader. TinyDir wraps dirent for POSIX and FindFirstFile for Windows.
 
-Available Archlinux AUR package : https://aur.archlinux.org/packages/tinydir-git/
-
 Example
 =======
 
@@ -65,6 +63,10 @@ Platforms
 =========
 
 POSIX and Windows supported. Open to the possibility of supporting other platforms.
+
+Links
+=====
+Available Archlinux AUR package : https://aur.archlinux.org/packages/tinydir-git/
 
 License
 =======
