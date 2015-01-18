@@ -66,8 +66,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #if !defined(_TINYDIR_MALLOC)
-	#define _TINYDIR_MALLOC(_size) ::malloc(_size)
-	#define _TINYDIR_FREE(_ptr)    ::free(_ptr)
+	#define _TINYDIR_MALLOC(_size) malloc(_size)
+	#define _TINYDIR_FREE(_ptr)    free(_ptr)
 #endif //!defined(_TINYDIR_MALLOC)
 
 typedef struct
