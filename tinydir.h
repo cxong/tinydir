@@ -58,6 +58,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _TINYDIR_FUNC static __inline__
 #endif
 
+/* Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. */
+#if    defined(_TINYDIR_MALLOC) &&  defined(_TINYDIR_FREE)
+#elif !defined(_TINYDIR_MALLOC) && !defined(_TINYDIR_FREE)
+#else
+#error "Either define both alloc and free or none of them!"
+#endif
+
+#if !defined(_TINYDIR_MALLOC)
+	#define _TINYDIR_MALLOC(_size) ::malloc(_size)
+	#define _TINYDIR_FREE(_ptr)    ::free(_ptr)
+#endif //!defined(_TINYDIR_MALLOC)
+
 typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
@@ -195,7 +207,7 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 	}
 
 	dir->n_files = 0;
-	dir->_files = (tinydir_file *)malloc(sizeof *dir->_files * n_files);
+	dir->_files = (tinydir_file *)_TINYDIR_MALLOC(sizeof *dir->_files * n_files);
 	if (dir->_files == NULL)
 	{
 		errno = ENOMEM;
@@ -247,7 +259,7 @@ void tinydir_close(tinydir_dir *dir)
 	dir->n_files = 0;
 	if (dir->_files != NULL)
 	{
-		free(dir->_files);
+		_TINYDIR_FREE(dir->_files);
 	}
 	dir->_files = NULL;
 #ifdef _WIN32
