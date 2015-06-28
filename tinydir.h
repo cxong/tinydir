@@ -70,7 +70,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define _TINYDIR_FREE(_ptr)    free(_ptr)
 #endif //!defined(_TINYDIR_MALLOC)
 
-typedef struct
+typedef struct _tinydir_file
 {
 	char path[_TINYDIR_PATH_MAX];
 	char name[_TINYDIR_FILENAME_MAX];
@@ -84,7 +84,7 @@ typedef struct
 #endif
 } tinydir_file;
 
-typedef struct
+typedef struct _tinydir_dir
 {
 	char path[_TINYDIR_PATH_MAX];
 	int has_next;
