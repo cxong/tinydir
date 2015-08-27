@@ -29,15 +29,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #include <string.h>
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#ifdef _MSC_VER
-#pragma warning (disable : 4996)
-#endif
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+# ifdef _MSC_VER
+#  pragma warning (disable : 4996)
+# endif
 #else
-#include <dirent.h>
-#include <libgen.h>
-#include <sys/stat.h>
+# include <dirent.h>
+# include <libgen.h>
+# include <sys/stat.h>
 #endif
 
 
@@ -46,16 +46,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _TINYDIR_PATH_MAX 4096
 #ifdef _WIN32
 /* extra chars for the "\\*" mask */
-#define _TINYDIR_PATH_EXTRA 2
+# define _TINYDIR_PATH_EXTRA 2
 #else
-#define _TINYDIR_PATH_EXTRA 0
+# define _TINYDIR_PATH_EXTRA 0
 #endif
 #define _TINYDIR_FILENAME_MAX 256
 
 #ifdef _MSC_VER
-#define _TINYDIR_FUNC static __inline
+# define _TINYDIR_FUNC static __inline
 #else
-#define _TINYDIR_FUNC static __inline__
+# define _TINYDIR_FUNC static __inline__
 #endif
 
 /* Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. */
@@ -78,8 +78,7 @@ typedef struct
 	int is_dir;
 	int is_reg;
 
-#ifdef _WIN32
-#else
+#ifndef _WIN32
 	struct stat _s;
 #endif
 } tinydir_file;
