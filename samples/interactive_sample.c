@@ -25,7 +25,7 @@ int main(void)
 
 			if (file.is_dir)
 			{
-				printf("[%zu] ", i);
+				printf("[%u] ", (unsigned int)i);
 			}
 			printf("%s", file.name);
 			if (file.is_dir)
