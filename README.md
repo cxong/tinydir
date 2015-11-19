@@ -64,10 +64,6 @@ Platforms
 
 POSIX and Windows supported. Open to the possibility of supporting other platforms.
 
-Links
-=====
-Available Archlinux AUR package : https://aur.archlinux.org/packages/tinydir-git/
-
 License
 =======
 
