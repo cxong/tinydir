@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013-2015, Cong Xu, Baudouin Feildel
+Copyright (c) 2013-2016, Cong Xu, Baudouin Feildel
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #ifndef TINYDIR_H
 #define TINYDIR_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <errno.h>
 #include <stdlib.h>
@@ -555,5 +559,9 @@ int _tinydir_file_cmp(const void *a, const void *b)
 	}
 	return strncmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
