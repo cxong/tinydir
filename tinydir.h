@@ -131,6 +131,11 @@ int _tinydir_file_cmp(const void *a, const void *b);
 _TINYDIR_FUNC
 int tinydir_open(tinydir_dir *dir, const char *path)
 {
+#ifndef _MSC_VER
+	int error;
+	struct dirent entry;
+#endif
+
 	if (dir == NULL || path == NULL || strlen(path) == 0)
 	{
 		errno = EINVAL;
@@ -169,7 +174,9 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	/* read first file */
 	dir->has_next = 1;
 #ifndef _MSC_VER
-	dir->_e = readdir(dir->_d);
+	error = readdir_r(dir->_d, &entry, &dir->_e);
+	if (error != 0) return -1;
+
 	if (dir->_e == NULL)
 	{
 		dir->has_next = 0;
@@ -282,6 +289,12 @@ void tinydir_close(tinydir_dir *dir)
 _TINYDIR_FUNC
 int tinydir_next(tinydir_dir *dir)
 {
+#ifndef _MSC_VER
+	int error;
+	struct dirent entry;
+	/*struct dirent *result;*/
+#endif
+	
 	if (dir == NULL)
 	{
 		errno = EINVAL;
@@ -296,7 +309,9 @@ int tinydir_next(tinydir_dir *dir)
 #ifdef _MSC_VER
 	if (FindNextFileA(dir->_h, &dir->_f) == 0)
 #else
-	dir->_e = readdir(dir->_d);
+	error = readdir_r(dir->_d, &entry, &dir->_e);
+	if (error != 0) return -1;
+
 	if (dir->_e == NULL)
 #endif
 	{
