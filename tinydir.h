@@ -21,6 +21,8 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+readdir_r buffer sizing 
 */
 #ifndef TINYDIR_H
 #define TINYDIR_H
@@ -40,6 +42,7 @@ extern "C" {
 # include <dirent.h>
 # include <libgen.h>
 # include <sys/stat.h>
+# include <stddef.h>
 #endif
 
 
@@ -72,6 +75,50 @@ extern "C" {
 	#define _TINYDIR_FREE(_ptr)    free(_ptr)
 #endif //!defined(_TINYDIR_MALLOC)
 
+
+#ifndef _MSC_VER
+ /*
+	The following authored by Ben Hutchings <ben@decadent.org.uk>
+	from https://womble.decadent.org.uk/readdir_r-advisory.html
+*/
+/* Calculate the required buffer size (in bytes) for directory       *
+ * entries read from the given directory handle.  Return -1 if this  *
+ * this cannot be done.                                              *
+ *                                                                   *
+ * This code does not trust values of NAME_MAX that are less than    *
+ * 255, since some systems (including at least HP-UX) incorrectly    *
+ * define it to be a smaller value.                                  *
+ *                                                                   *
+ * If you use autoconf, include fpathconf and dirfd in your          *
+ * AC_CHECK_FUNCS list.  Otherwise use some other method to detect   *
+ * and use them where available.                                     */
+
+static size_t dirent_buf_size(DIR *dirp)
+{
+    long name_max;
+    size_t name_end;
+#   if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) \
+       && defined(_PC_NAME_MAX)
+        name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
+        if (name_max == -1)
+#           if defined(NAME_MAX)
+                name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#           else
+                return (size_t)(-1);
+#           endif
+#   else
+#       if defined(NAME_MAX)
+            name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#       else
+#           error "buffer size for readdir_r cannot be determined"
+#       endif
+#   endif
+    name_end = (size_t)offsetof(struct dirent, d_name) + name_max + 1;
+    return (name_end > sizeof(struct dirent)
+            ? name_end : sizeof(struct dirent));
+}
+#endif
+
 typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
@@ -98,7 +145,7 @@ typedef struct
 #else
 	DIR *_d;
 	struct dirent *_e;
-	struct dirent _ep;
+	struct dirent *_ep;
 #endif
 } tinydir_dir;
 
@@ -134,6 +181,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 {
 #ifndef _MSC_VER
 	int error;
+	int size;	/* using int size */
 #endif
 
 	if (dir == NULL || path == NULL || strlen(path) == 0)
@@ -153,6 +201,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	dir->_h = INVALID_HANDLE_VALUE;
 #else
 	dir->_d = NULL;
+	dir->_ep = NULL;
 #endif
 	tinydir_close(dir);
 
@@ -174,7 +223,13 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	/* read first file */
 	dir->has_next = 1;
 #ifndef _MSC_VER
-	error = readdir_r(dir->_d, &dir->_ep, &dir->_e);
+	/* allocate dirent buffer for readdir_r */
+	size = dirent_buf_size(dir->_d); /* conversion to int */
+	if (size == -1) return -1;
+	dir->_ep = (struct dirent*)_TINYDIR_MALLOC(size);
+	if (dir->_ep == NULL) return -1;	
+
+	error = readdir_r(dir->_d, dir->_ep, &dir->_e);
 	if (error != 0) return -1;
 
 	if (dir->_e == NULL)
@@ -283,6 +338,11 @@ void tinydir_close(tinydir_dir *dir)
 	}
 	dir->_d = NULL;
 	dir->_e = NULL;
+	if (dir->_ep != NULL)
+	{
+		_TINYDIR_FREE(dir->_ep);
+	}
+	dir->_ep = NULL;
 #endif
 }
 
@@ -307,7 +367,8 @@ int tinydir_next(tinydir_dir *dir)
 #ifdef _MSC_VER
 	if (FindNextFileA(dir->_h, &dir->_f) == 0)
 #else
-	error = readdir_r(dir->_d, &dir->_ep, &dir->_e);
+	if (dir->_ep == NULL) return -1;
+	error = readdir_r(dir->_d, dir->_ep, &dir->_e);
 	if (error != 0) return -1;
 
 	if (dir->_e == NULL)
