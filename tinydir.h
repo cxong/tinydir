@@ -98,7 +98,7 @@ typedef struct
 #else
 	DIR *_d;
 	struct dirent *_e;
-	struct dirent _ep[_TINYDIR_PATH_MAX];
+	struct dirent _ep;
 #endif
 } tinydir_dir;
 
@@ -174,7 +174,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	/* read first file */
 	dir->has_next = 1;
 #ifndef _MSC_VER
-	error = readdir_r(dir->_d, dir->_ep, &dir->_e);
+	error = readdir_r(dir->_d, &dir->_ep, &dir->_e);
 	if (error != 0) return -1;
 
 	if (dir->_e == NULL)
@@ -307,7 +307,7 @@ int tinydir_next(tinydir_dir *dir)
 #ifdef _MSC_VER
 	if (FindNextFileA(dir->_h, &dir->_f) == 0)
 #else
-	error = readdir_r(dir->_d, dir->_ep, &dir->_e);
+	error = readdir_r(dir->_d, &dir->_ep, &dir->_e);
 	if (error != 0) return -1;
 
 	if (dir->_e == NULL)
