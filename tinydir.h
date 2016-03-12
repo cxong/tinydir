@@ -1,5 +1,8 @@
 /*
-Copyright (c) 2013-2016, Cong Xu, Baudouin Feildel, Andargor
+Copyright (c) 2013-2016, tinydir authors:
+- Cong Xu
+- Baudouin Feildel
+- Andargor <andargor@yahoo.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
