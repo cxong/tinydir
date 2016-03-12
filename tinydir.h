@@ -73,17 +73,6 @@ extern "C" {
 	#define _TINYDIR_FREE(_ptr)    free(_ptr)
 #endif /* !defined(_TINYDIR_MALLOC) */
 
-/* avoid warnings due to unused variables or parameters */
-#ifndef _MSC_VER
-	#if !defined(_TINYDIR_UNUSED)
-		#ifdef __GNUC__
-			#define _TINYDIR_UNUSED(x) _TINYDIR_UNUSED_ ## x __attribute__((__unused__))
-		#else
-			#define _TINYDIR_UNUSED(x) _TINYDIR_UNUSED_ ## x
-		#endif
-	#endif
-#endif
-
 #ifndef _MSC_VER
  /*
 	The following authored by Ben Hutchings <ben@decadent.org.uk>
@@ -100,11 +89,12 @@ extern "C" {
  * If you use autoconf, include fpathconf and dirfd in your          *
  * AC_CHECK_FUNCS list.  Otherwise use some other method to detect   *
  * and use them where available.                                     */
-
-static size_t dirent_buf_size(DIR * _TINYDIR_UNUSED(dirp))
+static size_t dirent_buf_size(DIR *dirp)
 {
     long name_max;
     size_t name_end;
+	/* parameter may be unused */
+	(void)dirp;
 	
 #   if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) \
        && defined(_PC_NAME_MAX)
