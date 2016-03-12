@@ -89,7 +89,8 @@ extern "C" {
  * If you use autoconf, include fpathconf and dirfd in your          *
  * AC_CHECK_FUNCS list.  Otherwise use some other method to detect   *
  * and use them where available.                                     */
-static size_t dirent_buf_size(DIR *dirp)
+_TINYDIR_FUNC
+size_t _tinydir_dirent_buf_size(DIR *dirp)
 {
     long name_max;
     size_t name_end;
@@ -223,7 +224,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	dir->has_next = 1;
 #ifndef _MSC_VER
 	/* allocate dirent buffer for readdir_r */
-	size = dirent_buf_size(dir->_d); /* conversion to int */
+	size = _tinydir_dirent_buf_size(dir->_d); /* conversion to int */
 	if (size == -1) return -1;
 	dir->_ep = (struct dirent*)_TINYDIR_MALLOC(size);
 	if (dir->_ep == NULL) return -1;	
