@@ -72,6 +72,5 @@ Simplified BSD.
 Known Limitations
 =================
 
-- Not threadsafe
 - Limited path and filename sizes
 - No wide char support
