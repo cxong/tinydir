@@ -73,52 +73,6 @@ extern "C" {
 	#define _TINYDIR_FREE(_ptr)    free(_ptr)
 #endif /* !defined(_TINYDIR_MALLOC) */
 
-#ifndef _MSC_VER
- /*
-	The following authored by Ben Hutchings <ben@decadent.org.uk>
-	from https://womble.decadent.org.uk/readdir_r-advisory.html
-*/
-/* Calculate the required buffer size (in bytes) for directory       *
- * entries read from the given directory handle.  Return -1 if this  *
- * this cannot be done.                                              *
- *                                                                   *
- * This code does not trust values of NAME_MAX that are less than    *
- * 255, since some systems (including at least HP-UX) incorrectly    *
- * define it to be a smaller value.                                  *
- *                                                                   *
- * If you use autoconf, include fpathconf and dirfd in your          *
- * AC_CHECK_FUNCS list.  Otherwise use some other method to detect   *
- * and use them where available.                                     */
-_TINYDIR_FUNC
-size_t _tinydir_dirent_buf_size(DIR *dirp)
-{
-    long name_max;
-    size_t name_end;
-	/* parameter may be unused */
-	(void)dirp;
-	
-#   if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) \
-       && defined(_PC_NAME_MAX)
-        name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
-        if (name_max == -1)
-#           if defined(NAME_MAX)
-                name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
-#           else
-                return (size_t)(-1);
-#           endif
-#   else
-#       if defined(NAME_MAX)
-            name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
-#       else
-#           error "buffer size for readdir_r cannot be determined"
-#       endif
-#   endif
-    name_end = (size_t)offsetof(struct dirent, d_name) + name_max + 1;
-    return (name_end > sizeof(struct dirent)
-            ? name_end : sizeof(struct dirent));
-}
-#endif
-
 typedef struct
 {
 	char path[_TINYDIR_PATH_MAX];
@@ -172,6 +126,10 @@ _TINYDIR_FUNC
 void _tinydir_get_ext(tinydir_file *file);
 _TINYDIR_FUNC
 int _tinydir_file_cmp(const void *a, const void *b);
+#ifndef _MSC_VER
+_TINYDIR_FUNC
+size_t _tinydir_dirent_buf_size(DIR *dirp);
+#endif
 
 
 /* definitions*/
@@ -633,6 +591,52 @@ int _tinydir_file_cmp(const void *a, const void *b)
 	}
 	return strncmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
 }
+
+#ifndef _MSC_VER
+/*
+The following authored by Ben Hutchings <ben@decadent.org.uk>
+from https://womble.decadent.org.uk/readdir_r-advisory.html
+*/
+/* Calculate the required buffer size (in bytes) for directory      *
+* entries read from the given directory handle.  Return -1 if this  *
+* this cannot be done.                                              *
+*                                                                   *
+* This code does not trust values of NAME_MAX that are less than    *
+* 255, since some systems (including at least HP-UX) incorrectly    *
+* define it to be a smaller value.                                  *
+*                                                                   *
+* If you use autoconf, include fpathconf and dirfd in your          *
+* AC_CHECK_FUNCS list.  Otherwise use some other method to detect   *
+* and use them where available.                                     */
+_TINYDIR_FUNC
+size_t _tinydir_dirent_buf_size(DIR *dirp)
+{
+	long name_max;
+	size_t name_end;
+	/* parameter may be unused */
+	(void)dirp;
+
+#   if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) \
+       && defined(_PC_NAME_MAX)
+	name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
+	if (name_max == -1)
+#           if defined(NAME_MAX)
+		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#           else
+		return (size_t)(-1);
+#           endif
+#   else
+#       if defined(NAME_MAX)
+	name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#       else
+#           error "buffer size for readdir_r cannot be determined"
+#       endif
+#   endif
+	name_end = (size_t)offsetof(struct dirent, d_name) + name_max + 1;
+	return (name_end > sizeof(struct dirent)
+		? name_end : sizeof(struct dirent));
+}
+#endif
 
 #ifdef __cplusplus
 }
