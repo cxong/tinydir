@@ -169,12 +169,13 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	dir->_h = FindFirstFileA(dir->path, &dir->_f);
 	dir->path[strlen(dir->path) - 2] = '\0';
 	if (dir->_h == INVALID_HANDLE_VALUE)
+	{
+		errno = ENOENT;
 #else
 	dir->_d = opendir(path);
 	if (dir->_d == NULL)
-#endif
 	{
-		errno = ENOENT;
+#endif
 		goto bail;
 	}
 
@@ -231,7 +232,6 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
 	dir->_files = (tinydir_file *)_TINYDIR_MALLOC(sizeof *dir->_files * n_files);
 	if (dir->_files == NULL)
 	{
-		errno = ENOMEM;
 		goto bail;
 	}
 	while (dir->has_next)
