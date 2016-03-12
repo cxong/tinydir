@@ -71,7 +71,7 @@ extern "C" {
 #if !defined(_TINYDIR_MALLOC)
 	#define _TINYDIR_MALLOC(_size) malloc(_size)
 	#define _TINYDIR_FREE(_ptr)    free(_ptr)
-#endif //!defined(_TINYDIR_MALLOC)
+#endif /* !defined(_TINYDIR_MALLOC) */
 
 /* avoid warnings due to unused variables or parameters */
 #ifndef _MSC_VER
