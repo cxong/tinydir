@@ -278,10 +278,7 @@ void tinydir_close(tinydir_dir *dir)
 	memset(dir->path, 0, sizeof(dir->path));
 	dir->has_next = 0;
 	dir->n_files = 0;
-	if (dir->_files != NULL)
-	{
-		_TINYDIR_FREE(dir->_files);
-	}
+	_TINYDIR_FREE(dir->_files);
 	dir->_files = NULL;
 #ifdef _MSC_VER
 	if (dir->_h != INVALID_HANDLE_VALUE)
@@ -296,10 +293,7 @@ void tinydir_close(tinydir_dir *dir)
 	}
 	dir->_d = NULL;
 	dir->_e = NULL;
-	if (dir->_ep != NULL)
-	{
-		_TINYDIR_FREE(dir->_ep);
-	}
+	_TINYDIR_FREE(dir->_ep);
 	dir->_ep = NULL;
 #endif
 }
@@ -307,10 +301,6 @@ void tinydir_close(tinydir_dir *dir)
 _TINYDIR_FUNC
 int tinydir_next(tinydir_dir *dir)
 {
-#ifndef _MSC_VER
-	int error;
-#endif
-	
 	if (dir == NULL)
 	{
 		errno = EINVAL;
@@ -325,10 +315,14 @@ int tinydir_next(tinydir_dir *dir)
 #ifdef _MSC_VER
 	if (FindNextFileA(dir->_h, &dir->_f) == 0)
 #else
-	if (dir->_ep == NULL) return -1;
-	error = readdir_r(dir->_d, dir->_ep, &dir->_e);
-	if (error != 0) return -1;
-
+	if (dir->_ep == NULL)
+	{
+		return -1;
+	}
+	if (readdir_r(dir->_d, dir->_ep, &dir->_e) != 0)
+	{
+		return -1;
+	}
 	if (dir->_e == NULL)
 #endif
 	{
