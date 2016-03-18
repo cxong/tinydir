@@ -74,3 +74,4 @@ Known Limitations
 
 - Limited path and filename sizes
 - No wide char support
+- [Possible race condition bug if folder being read has changing content](https://github.com/cxong/tinydir/issues/13)
