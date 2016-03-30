@@ -60,6 +60,8 @@ extern "C" {
 
 #ifdef _MSC_VER
 # define _TINYDIR_FUNC static __inline
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define _TINYDIR_FUNC static inline
 #else
 # define _TINYDIR_FUNC static __inline__
 #endif
