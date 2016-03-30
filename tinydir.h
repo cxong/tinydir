@@ -60,10 +60,10 @@ extern "C" {
 
 #ifdef _MSC_VER
 # define _TINYDIR_FUNC static __inline
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#define _TINYDIR_FUNC static inline
-#else
+#elif !defined __STDC_VERSION__ || __STDC_VERSION__ < 199901L
 # define _TINYDIR_FUNC static __inline__
+#else
+# define _TINYDIR_FUNC static inline
 #endif
 
 /* MinGW does not define readdir_r (yet); use readdir fallback */
