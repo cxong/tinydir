@@ -66,8 +66,9 @@ extern "C" {
 # define _TINYDIR_FUNC static inline
 #endif
 
-/* MinGW does not define readdir_r (yet); use readdir fallback */
-#ifdef __MINGW32__
+/* readdir_r is a POSIX-only function, and may not be available under various
+ * environments/settings, e.g. MinGW. Use readdir fallback */
+#if defined __MINGW32__ || !(_POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE || _POSIX_SOURCE)
 #define _TINYDIR_USE_READDIR
 #endif
 
