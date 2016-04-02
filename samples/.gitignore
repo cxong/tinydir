@@ -36,3 +36,7 @@ Win32/
 
 # Linux
 Makefile
+
+# OS X
+CMakeScripts/
+*.xcodeproj

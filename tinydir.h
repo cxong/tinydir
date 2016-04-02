@@ -175,7 +175,10 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	int error;
 	int size;	/* using int size */
 #endif
+#else
+	char path_buf[_TINYDIR_PATH_MAX];
 #endif
+	char *pathp;
 
 	if (dir == NULL || path == NULL || strlen(path) == 0)
 	{
@@ -201,10 +204,17 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 	tinydir_close(dir);
 
 	strcpy(dir->path, path);
+	/* Remove trailing slashes */
+	pathp = &dir->path[strlen(dir->path) - 1];
+	while (pathp != dir->path && (*pathp == '\\' || *pathp == '/'))
+	{
+		*pathp = '\0';
+		pathp++;
+	}
 #ifdef _MSC_VER
-	strcat(dir->path, "\\*");
-	dir->_h = FindFirstFileA(dir->path, &dir->_f);
-	dir->path[strlen(dir->path) - 2] = '\0';
+	strcpy(path_buf, dir->path);
+	strcat(path_buf, "\\*");
+	dir->_h = FindFirstFileA(path_buf, &dir->_f);
 	if (dir->_h == INVALID_HANDLE_VALUE)
 	{
 		errno = ENOENT;
