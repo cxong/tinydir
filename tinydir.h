@@ -68,8 +68,26 @@ extern "C" {
 
 /* readdir_r is a POSIX-only function, and may not be available under various
  * environments/settings, e.g. MinGW. Use readdir fallback */
-#if defined __MINGW32__ || !(_POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE || _POSIX_SOURCE)
-#define _TINYDIR_USE_READDIR
+#if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE ||\
+	_POSIX_SOURCE
+# define _TINYDIR_HAS_READDIR_R
+#endif
+#if _POSIX_C_SOURCE >= 200112L
+# define _TINYDIR_HAS_FPATHCONF
+# include <unistd.h>
+#endif
+#if _BSD_SOURCE || _SVID_SOURCE || \
+	(_POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700)
+# define _TINYDIR_HAS_DIRFD
+# include <sys/types.h>
+#endif
+#if defined _TINYDIR_HAS_FPATHCONF && defined _TINYDIR_HAS_DIRFD &&\
+	defined _PC_NAME_MAX
+# define _TINYDIR_USE_FPATHCONF
+#endif
+#if defined __MINGW32__ || !defined _TINYDIR_HAS_READDIR_R ||\
+	!(defined _TINYDIR_USE_FPATHCONF || defined NAME_MAX)
+# define _TINYDIR_USE_READDIR
 #endif
 
 /* Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. */
@@ -626,11 +644,7 @@ from https://womble.decadent.org.uk/readdir_r-advisory.html
 *                                                                   *
 * This code does not trust values of NAME_MAX that are less than    *
 * 255, since some systems (including at least HP-UX) incorrectly    *
-* define it to be a smaller value.                                  *
-*                                                                   *
-* If you use autoconf, include fpathconf and dirfd in your          *
-* AC_CHECK_FUNCS list.  Otherwise use some other method to detect   *
-* and use them where available.                                     */
+* define it to be a smaller value.                                  */
 _TINYDIR_FUNC
 size_t _tinydir_dirent_buf_size(DIR *dirp)
 {
@@ -639,25 +653,22 @@ size_t _tinydir_dirent_buf_size(DIR *dirp)
 	/* parameter may be unused */
 	(void)dirp;
 
-#   if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) \
-       && defined(_PC_NAME_MAX)
+#if defined _TINYDIR_USE_FPATHCONF
 	name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
 	if (name_max == -1)
-#           if defined(NAME_MAX)
+#if defined(NAME_MAX)
 		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
-#           else
+#else
 		return (size_t)(-1);
-#           endif
-#   else
-#       if defined(NAME_MAX)
-	name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
-#       else
-#           error "buffer size for readdir_r cannot be determined"
-#       endif
-#   endif
+#endif
+#elif defined(NAME_MAX)
+ 	name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#else
+#error "buffer size for readdir_r cannot be determined"
+#endif
 	name_end = (size_t)offsetof(struct dirent, d_name) + name_max + 1;
-	return (name_end > sizeof(struct dirent)
-		? name_end : sizeof(struct dirent));
+	return (name_end > sizeof(struct dirent) ?
+		name_end : sizeof(struct dirent));
 }
 #endif
 #endif
