@@ -38,6 +38,7 @@ extern "C" {
 #ifdef _MSC_VER
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
+# pragma warning(push)
 # pragma warning (disable : 4996)
 #else
 # include <dirent.h>
@@ -686,5 +687,9 @@ size_t _tinydir_dirent_buf_size(DIR *dirp)
 #ifdef __cplusplus
 }
 #endif
+
+# if defined (_MSC_VER)
+# pragma warning(pop)
+# endif
 
 #endif
