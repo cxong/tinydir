@@ -52,9 +52,9 @@ extern "C" {
 /* types */
 
 /* Windows UNICODE wide character support */
-#if ((defined _MSC_VER) && (defined _UNICODE))
+#ifdef _MSC_VER
 #define _tinydir_char_t TCHAR
-#define TINYDIR_STRING(s) TEXT(s)
+#define TINYDIR_STRING(s) _TEXT(s)
 #define _tinydir_strlen _tcslen
 #define _tinydir_strcpy _tcscpy
 #define _tinydir_strcat _tcscat
@@ -237,7 +237,7 @@ int tinydir_open(tinydir_dir *dir, const _tinydir_char_t *path)
 #ifdef _MSC_VER
 	_tinydir_strcpy(path_buf, dir->path);
 	_tinydir_strcat(path_buf, TINYDIR_STRING("\\*"));
-	dir->_h = FindFirstFileA(path_buf, &dir->_f);
+	dir->_h = FindFirstFile(path_buf, &dir->_f);
 	if (dir->_h == INVALID_HANDLE_VALUE)
 	{
 		errno = ENOENT;
@@ -388,7 +388,7 @@ int tinydir_next(tinydir_dir *dir)
 	}
 
 #ifdef _MSC_VER
-	if (FindNextFileA(dir->_h, &dir->_f) == 0)
+	if (FindNextFile(dir->_h, &dir->_f) == 0)
 #else
 #ifdef _TINYDIR_USE_READDIR
 	dir->_e = readdir(dir->_d);
