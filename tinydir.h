@@ -171,7 +171,7 @@ typedef struct tinydir_dir
 	tinydir_file *_files;
 #ifdef _MSC_VER
 	HANDLE _h;
-	WIN32_FIND_DATAA _f;
+	WIN32_FIND_DATA _f;
 #else
 	_TINYDIR_DIR *_d;
 	struct _tinydir_dirent *_e;

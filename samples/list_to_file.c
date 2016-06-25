@@ -5,6 +5,8 @@
 #include "tinydir.h"
 #endif
 
+char bom[] = "\xFF\xFE";
+
 int main(void) {
 
   FILE *fp;
@@ -14,7 +16,6 @@ int main(void) {
   fp = fopen("/file/to/output","wb");
 
 #ifdef _WIN32
-  char bom[] = "\xFF\xFE";
   fwrite(bom, 1, 2, fp);
 #endif
 
