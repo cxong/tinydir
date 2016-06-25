@@ -47,12 +47,15 @@ extern "C" {
 # include <sys/stat.h>
 # include <stddef.h>
 #endif
+#ifdef __MINGW32__
+# include <tchar.h>
+#endif
 
 
 /* types */
 
 /* Windows UNICODE wide character support */
-#ifdef _MSC_VER
+#if defined _MSC_VER || defined __MINGW32__
 #define _tinydir_char_t TCHAR
 #define TINYDIR_STRING(s) _TEXT(s)
 #define _tinydir_strlen _tcslen
@@ -113,6 +116,23 @@ extern "C" {
 # define _TINYDIR_USE_READDIR
 #endif
 
+/* MINGW32 has two versions of dirent, ASCII and UNICODE*/
+#ifndef _MSC_VER
+#if (defined __MINGW32__) && (defined _UNICODE)
+#define _TINYDIR_DIR _WDIR
+#define _tinydir_dirent _wdirent
+#define _tinydir_opendir _wopendir
+#define _tinydir_readdir _wreaddir
+#define _tinydir_closedir _wclosedir
+#else
+#define _TINYDIR_DIR DIR
+#define _tinydir_dirent dirent
+#define _tinydir_opendir opendir
+#define _tinydir_readdir readdir
+#define _tinydir_closedir closedir
+#endif
+#endif
+
 /* Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. */
 #if    defined(_TINYDIR_MALLOC) &&  defined(_TINYDIR_FREE)
 #elif !defined(_TINYDIR_MALLOC) && !defined(_TINYDIR_FREE)
@@ -134,7 +154,11 @@ typedef struct tinydir_file
 	int is_reg;
 
 #ifndef _MSC_VER
+#ifdef __MINGW32__
+	struct _stat _s;
+#else
 	struct stat _s;
+#endif
 #endif
 } tinydir_file;
 
@@ -149,10 +173,10 @@ typedef struct tinydir_dir
 	HANDLE _h;
 	WIN32_FIND_DATAA _f;
 #else
-	DIR *_d;
-	struct dirent *_e;
+	_TINYDIR_DIR *_d;
+	struct _tinydir_dirent *_e;
 #ifndef _TINYDIR_USE_READDIR
-	struct dirent *_ep;
+	struct _tinydir_dirent *_ep;
 #endif
 #endif
 } tinydir_dir;
@@ -183,7 +207,7 @@ int _tinydir_file_cmp(const void *a, const void *b);
 #ifndef _MSC_VER
 #ifndef _TINYDIR_USE_READDIR
 _TINYDIR_FUNC
-size_t _tinydir_dirent_buf_size(DIR *dirp);
+size_t _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp);
 #endif
 #endif
 
@@ -242,7 +266,7 @@ int tinydir_open(tinydir_dir *dir, const _tinydir_char_t *path)
 	{
 		errno = ENOENT;
 #else
-	dir->_d = opendir(path);
+	dir->_d = _tinydir_opendir(path);
 	if (dir->_d == NULL)
 	{
 #endif
@@ -253,12 +277,12 @@ int tinydir_open(tinydir_dir *dir, const _tinydir_char_t *path)
 	dir->has_next = 1;
 #ifndef _MSC_VER
 #ifdef _TINYDIR_USE_READDIR
-	dir->_e = readdir(dir->_d);
+	dir->_e = _tinydir_readdir(dir->_d);
 #else
 	/* allocate dirent buffer for readdir_r */
 	size = _tinydir_dirent_buf_size(dir->_d); /* conversion to int */
 	if (size == -1) return -1;
-	dir->_ep = (struct dirent*)_TINYDIR_MALLOC(size);
+	dir->_ep = (struct _tinydir_dirent*)_TINYDIR_MALLOC(size);
 	if (dir->_ep == NULL) return -1;
 
 	error = readdir_r(dir->_d, dir->_ep, &dir->_e);
@@ -362,7 +386,7 @@ void tinydir_close(tinydir_dir *dir)
 #else
 	if (dir->_d)
 	{
-		closedir(dir->_d);
+		_tinydir_closedir(dir->_d);
 	}
 	dir->_d = NULL;
 	dir->_e = NULL;
@@ -391,7 +415,7 @@ int tinydir_next(tinydir_dir *dir)
 	if (FindNextFile(dir->_h, &dir->_f) == 0)
 #else
 #ifdef _TINYDIR_USE_READDIR
-	dir->_e = readdir(dir->_d);
+	dir->_e = _tinydir_readdir(dir->_d);
 #else
 	if (dir->_ep == NULL)
 	{
@@ -474,7 +498,12 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 	);
 	_tinydir_strcat(file->path, file->name);
 #ifndef _MSC_VER
-	if (stat(file->path, &file->_s) == -1)
+#ifdef __MINGW32__
+	if (_tstat(
+#else
+	if (stat(
+#endif
+		file->path, &file->_s) == -1)
 	{
 		return -1;
 	}
@@ -583,11 +612,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 
 	/* Get the parent path */
 #ifdef _MSC_VER
-#ifdef _UNICODE
-        if (_wsplitpath_s(
-#else
-	if (_splitpath_s(
-#endif
+	if (_tsplitpath_s(
 			path,
 			drive_buf, sizeof drive_buf,
 			dir_name_buf, sizeof dir_name_buf,
@@ -605,9 +630,9 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	base_name = file_name_buf;
 #else
 	_tinydir_strcpy(dir_name_buf, path);
-	dir_name = dirname(dir_name_buf);
+	dir_name = TINYDIR_STRING(dirname(dir_name_buf));
 	_tinydir_strcpy(file_name_buf, path);
-	base_name = basename(file_name_buf);
+	base_name = TINYDIR_STRING(basename(file_name_buf));
 #endif
 
 	/* Open the parent directory */
@@ -683,7 +708,7 @@ from https://womble.decadent.org.uk/readdir_r-advisory.html
 * 255, since some systems (including at least HP-UX) incorrectly    *
 * define it to be a smaller value.                                  */
 _TINYDIR_FUNC
-size_t _tinydir_dirent_buf_size(DIR *dirp)
+size_t _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp)
 {
 	long name_max;
 	size_t name_end;
@@ -703,9 +728,9 @@ size_t _tinydir_dirent_buf_size(DIR *dirp)
 #else
 #error "buffer size for readdir_r cannot be determined"
 #endif
-	name_end = (size_t)offsetof(struct dirent, d_name) + name_max + 1;
-	return (name_end > sizeof(struct dirent) ?
-		name_end : sizeof(struct dirent));
+	name_end = (size_t)offsetof(struct _tinydir_dirent, d_name) + name_max + 1;
+	return (name_end > sizeof(struct _tinydir_dirent) ?
+		name_end : sizeof(struct _tinydir_dirent));
 }
 #endif
 #endif
