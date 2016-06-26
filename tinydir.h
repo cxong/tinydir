@@ -594,7 +594,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	_tinydir_char_t file_name_buf[_TINYDIR_FILENAME_MAX];
 	_tinydir_char_t *dir_name;
 	_tinydir_char_t *base_name;
-#ifdef _MSC_VER
+#if (defined _MSC_VER || defined __MINGW32__)
 	_tinydir_char_t drive_buf[_TINYDIR_PATH_MAX];
 	_tinydir_char_t ext_buf[_TINYDIR_FILENAME_MAX];
 #endif
@@ -611,15 +611,25 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	}
 
 	/* Get the parent path */
+#if (defined _MSC_VER || defined __MINGW32__)
 #ifdef _MSC_VER
-	if (_tsplitpath_s(
+		_tsplitpath_s(
 			path,
 			drive_buf, sizeof drive_buf,
 			dir_name_buf, sizeof dir_name_buf,
 			file_name_buf, sizeof file_name_buf,
-			ext_buf, sizeof ext_buf))
+			ext_buf, sizeof ext_buf);
+#else
+		_tsplitpath(
+			path,
+			drive_buf,
+			dir_name_buf,
+			file_name_buf,
+			ext_buf);
+#endif
+	if (errno)
 	{
-		errno = EINVAL;
+//		errno = EINVAL;
 		return -1;
 	}
 	/* Concatenate the drive letter and dir name to form full dir name */
@@ -630,9 +640,9 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	base_name = file_name_buf;
 #else
 	_tinydir_strcpy(dir_name_buf, path);
-	dir_name = TINYDIR_STRING(dirname(dir_name_buf));
+	dir_name = dirname(dir_name_buf);
 	_tinydir_strcpy(file_name_buf, path);
-	base_name = TINYDIR_STRING(basename(file_name_buf));
+	base_name =basename(file_name_buf);
 #endif
 
 	/* Open the parent directory */
