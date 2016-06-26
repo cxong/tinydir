@@ -629,7 +629,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 #endif
 	if (errno)
 	{
-//		errno = EINVAL;
+		errno = EINVAL;
 		return -1;
 	}
 	/* Concatenate the drive letter and dir name to form full dir name */
