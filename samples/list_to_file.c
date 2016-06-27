@@ -13,7 +13,13 @@ int main(void) {
   tinydir_dir dir;
   tinydir_open(&dir, TINYDIR_STRING("/path/to/dir"));
 
-  fp = fopen("/file/to/output","wb");
+  fp = 
+#ifdef _WIN32
+	_wfopen(
+#else
+	fopen(
+#endif
+		TINYDIR_STRING("/file/to/output"), TINYDIR_STRING("wb"));
 
 #ifdef _WIN32
   fwrite(bom, 1, 2, fp);
