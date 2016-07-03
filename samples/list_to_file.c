@@ -14,14 +14,14 @@ int main(void) {
   tinydir_open(&dir, TINYDIR_STRING("/path/to/dir"));
 
   fp = 
-#ifdef _WIN32
+#if ((defined _WIN32) && (defined _UNICODE))
 	_wfopen(
 #else
 	fopen(
 #endif
 		TINYDIR_STRING("/file/to/output"), TINYDIR_STRING("wb"));
 
-#ifdef _WIN32
+#if ((defined _WIN32) && (defined _UNICODE))
   fwrite(bom, 1, 2, fp);
 #endif
 
