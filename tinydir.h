@@ -612,7 +612,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 
 	/* Get the parent path */
 #if (defined _MSC_VER || defined __MINGW32__)
-#ifdef _MSC_VER
+#if ((defined _MSC_VER) && (_MSC_VER >= 1400))
 		_tsplitpath_s(
 			path,
 			drive_buf, sizeof drive_buf,
