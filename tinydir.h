@@ -32,6 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
+#if ((defined _UNICODE) & !(defined UNICODE))
+#define UNICODE
+#endif
+
+#if ((defined UNICODE) & !(defined _UNICODE))
+#define _UNICODE
+#endif
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>

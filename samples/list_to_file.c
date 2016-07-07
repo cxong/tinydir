@@ -2,6 +2,7 @@
 
 #ifndef TINYDIR_H
 #define _UNICODE
+#define UNICODE
 #include "tinydir.h"
 #endif
 
