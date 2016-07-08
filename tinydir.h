@@ -1,6 +1,7 @@
 /*
 Copyright (c) 2013-2016, tinydir authors:
 - Cong Xu
+- Lautis Sun
 - Baudouin Feildel
 - Andargor <andargor@yahoo.com>
 All rights reserved.
