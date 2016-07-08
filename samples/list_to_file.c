@@ -1,10 +1,8 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 
-#ifndef TINYDIR_H
 #define _UNICODE
 #define UNICODE
 #include "tinydir.h"
-#endif
 
 char bom[] = "\xFF\xFE";
 
