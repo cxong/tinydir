@@ -4,6 +4,8 @@ TinyDir
 
 Lightweight, portable and easy to integrate C directory and file reader. TinyDir wraps dirent for POSIX and FindFirstFile for Windows.
 
+Windows unicode is supported by defining `UNICODE` and `_UNICODE` before including `tinydir.h`.
+
 Example
 =======
 
@@ -73,5 +75,4 @@ Known Limitations
 =================
 
 - Limited path and filename sizes
-- No wide char support
 - [Possible race condition bug if folder being read has changing content](https://github.com/cxong/tinydir/issues/13)
