@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES(..)
 # Add definitions
 
 if(MSVC)
-	add_definitions(-W4 -WX)
+	add_definitions(-W4 -WX -wd"4996")
 else()
 	add_definitions(-fsigned-char -Wall -W -Wshadow -Wpointer-arith -Wcast-qual -Winline -Werror)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wstrict-prototypes")
@@ -23,3 +23,4 @@ add_executable(iterate_sample iterate_sample.c)
 add_executable(random_access_sample random_access_sample.c)
 add_executable(interactive_sample interactive_sample.c)
 add_executable(cpp_sample cpp_sample.cpp)
+add_executable(list_to_file list_to_file.c)
