@@ -69,7 +69,7 @@ POSIX and Windows supported. Open to the possibility of supporting other platfor
 License
 =======
 
-Simplified BSD.
+Simplified BSD; if you use tinydir you can comply by including `tinydir.h` or `COPYING` somewhere in your package.
 
 Known Limitations
 =================
