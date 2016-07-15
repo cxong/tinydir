@@ -20,8 +20,5 @@ before_script:
   - export CTEST_OUTPUT_ON_FAILURE=1
 
 script:
-  - cmake samples
-  - make -j2
-  - cmake tests
-  - make -j2
-  - make test
+  - mkdir build && cd build && cmake ../samples && make -j2 && cd .. && rm -rf build
+  - mkdir build && cd build && cmake ../tests && make -j2 && make test && cd .. && rm -rf build
