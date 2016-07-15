@@ -22,3 +22,6 @@ before_script:
 script:
   - cmake samples
   - make -j2
+  - cmake tests
+  - make -j2
+  - make test
