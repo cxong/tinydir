@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -117,7 +117,7 @@ if (!(cond)) {\
     cbehave_feature_return(__FILE__, __LINE__, ret, _state); \
     goto _feature_over; \
 }\
-    
+
 #define TEST_FEATURE(name) {_cbehave_feature_##name}
 
 #define SHOULD_INT_EQUAL(actual, expected) do { \
@@ -157,7 +157,7 @@ if (!(cond)) {\
 } while(0)
 
 #define CBEHAVE_RUN(_description, ...)\
-int main() {\
+int main(void) {\
 	cbehave_feature _cfeatures[] = {__VA_ARGS__};\
 	return cbehave_runner(_description, _cfeatures);\
 }
@@ -170,7 +170,7 @@ typedef struct cbehave_feature {
 } cbehave_feature;
 
 int _cbehave_runner(const char *description, const cbehave_feature *features, int count);
-void should_int_equal(int actual, int expected, 
+void should_int_equal(int actual, int expected,
                       void *state,
                       const char *file, int line);
 void should_int_gt(int val1, int val2,

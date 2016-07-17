@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <tinydir.h>
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	tinydir_dir dir;
 	size_t i;
-	if (tinydir_open_sorted(&dir, ".") == -1)
+	if (tinydir_open_sorted(&dir, argc >= 2 ? argv[1] : ".") == -1)
 	{
 		perror("Error opening file");
 		goto bail;
