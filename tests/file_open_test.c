@@ -1,16 +1,34 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 #include <tinydir.h>
 #include "cbehave.h"
 
+static void make_temp_file(const char *prefix, char *out)
+{
+#ifdef _MSC_VER
+	if (GetTempFileName(".", prefix, 0, out) != 0)
+	{
+		// Strip the ".\\" prefix
+		if (strncmp(out, ".\\", 2) == 0)
+		{
+			memmove(out, out + 2, strlen(out));
+		}
+		// Create file
+		fclose(fopen(out, "w"));
+	}
+#else
+	#include <stdlib.h>
+	#include <unistd.h>
+	sprintf(out, "%sXXXXXX", prefix);
+	close(mkstemp(out));
+#endif
+}
+
 FEATURE(file_open, "File open")
 	SCENARIO("Open file in current directory")
 		GIVEN("a file in the current directory")
-			char name[] = "fileXXXXXX";
-			int fd = mkstemp(name);
-			close(fd);
+			char name[4096];
+			make_temp_file("temp_file_", name);
 		WHEN("we open it")
 			tinydir_file file;
 			int r = tinydir_file_open(&file, name);

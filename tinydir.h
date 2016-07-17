@@ -641,6 +641,12 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 		errno = EINVAL;
 		return -1;
 	}
+	/* Emulate the behavior of dirname by returning "." for dir name if it's
+	empty */
+	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
+	{
+		strcpy(dir_name_buf, ".");
+	}
 	/* Concatenate the drive letter and dir name to form full dir name */
 	_tinydir_strcat(drive_buf, dir_name_buf);
 	dir_name = drive_buf;

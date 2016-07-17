@@ -157,7 +157,7 @@ if (!(cond)) {\
 } while(0)
 
 #define CBEHAVE_RUN(_description, ...)\
-int main(int argc, char *argv[]) {\
+int main() {\
 	cbehave_feature _cfeatures[] = {__VA_ARGS__};\
 	return cbehave_runner(_description, _cfeatures);\
 }
