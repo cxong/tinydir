@@ -33,11 +33,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-#if ((defined _UNICODE) & !(defined UNICODE))
+#if ((defined _UNICODE) && !(defined UNICODE))
 #define UNICODE
 #endif
 
-#if ((defined UNICODE) & !(defined _UNICODE))
+#if ((defined UNICODE) && !(defined _UNICODE))
 #define _UNICODE
 #endif
 
@@ -643,9 +643,13 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	}
 	/* Emulate the behavior of dirname by returning "." for dir name if it's
 	empty */
+#if ((defined _MSC_VER || defined __MINGW32__) && (defined UNICODE))
+	if (drive_buf[0] == '\0' && drive_buf[1] == '\0' && dir_name_buf[0] == '\0' && dir_name_buf[1] == '\0')
+#else
 	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
+#endif
 	{
-		strcpy(dir_name_buf, ".");
+		_tinydir_strcpy(dir_name_buf, TINYDIR_STRING("."));
 	}
 	/* Concatenate the drive letter and dir name to form full dir name */
 	_tinydir_strcat(drive_buf, dir_name_buf);
