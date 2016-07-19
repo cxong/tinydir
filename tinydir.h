@@ -645,7 +645,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	empty */
 	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
 	{
-		strcpy(dir_name_buf, ".");
+		_tinydir_strcpy(dir_name_buf, TINYDIR_STRING("."));
 	}
 	/* Concatenate the drive letter and dir name to form full dir name */
 	_tinydir_strcat(drive_buf, dir_name_buf);
