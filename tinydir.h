@@ -643,7 +643,11 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	}
 	/* Emulate the behavior of dirname by returning "." for dir name if it's
 	empty */
+#if ((defined _MSC_VER || defined __MINGW32__) && (defined UNICODE))
+	if (drive_buf[0] == '\0' && drive_buf[1] == '\0' && dir_name_buf[0] == '\0' && dir_name_buf[1] == '\0')
+#else
 	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
+#endif
 	{
 		_tinydir_strcpy(dir_name_buf, TINYDIR_STRING("."));
 	}
