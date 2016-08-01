@@ -26,7 +26,11 @@ int main(void)
 		}
 		printf("\n");
 
-		tinydir_next(&dir);
+		if (tinydir_next(&dir) == -1)
+		{
+			perror("Error getting next file");
+			goto bail;
+		}
 	}
 
 bail:
