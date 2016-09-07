@@ -624,10 +624,10 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 #if ((defined _MSC_VER) && (_MSC_VER >= 1400))
 		_tsplitpath_s(
 			path,
-			drive_buf, sizeof drive_buf,
-			dir_name_buf, sizeof dir_name_buf,
-			file_name_buf, sizeof file_name_buf,
-			ext_buf, sizeof ext_buf);
+			drive_buf, _TINYDIR_PATH_MAX,
+			dir_name_buf, _TINYDIR_PATH_MAX,
+			file_name_buf, _TINYDIR_FILENAME_MAX,
+			ext_buf, sizeof _TINYDIR_FILENAME_MAX);
 #else
 		_tsplitpath(
 			path,
@@ -636,6 +636,15 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 			file_name_buf,
 			ext_buf);
 #endif
+
+/* _splitpath_s not work fine with only filename and widechar support */
+#ifdef _UNICODE
+		if (drive_buf[0] == L'\xFEFE')
+			drive_buf[0] = '\0';
+		if (dir_name_buf[0] == L'\xFEFE')
+			dir_name_buf[0] = '\0';
+#endif
+
 	if (errno)
 	{
 		errno = EINVAL;
@@ -643,11 +652,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	}
 	/* Emulate the behavior of dirname by returning "." for dir name if it's
 	empty */
-#if ((defined _MSC_VER || defined __MINGW32__) && (defined UNICODE))
-	if (drive_buf[0] == '\0' && drive_buf[1] == '\0' && dir_name_buf[0] == '\0' && dir_name_buf[1] == '\0')
-#else
 	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
-#endif
 	{
 		_tinydir_strcpy(dir_name_buf, TINYDIR_STRING("."));
 	}
