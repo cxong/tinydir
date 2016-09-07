@@ -639,7 +639,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 		_tsplitpath_s(
 			path,
 			drive_buf, _TINYDIR_DRIVE_MAX,
-			dir_name_buf, _TINYDIR_PATH_MAX,
+			dir_name_buf, _TINYDIR_FILENAME_MAX,
 			file_name_buf, _TINYDIR_FILENAME_MAX,
 			ext_buf, sizeof _TINYDIR_FILENAME_MAX);
 #else
