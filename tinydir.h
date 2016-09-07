@@ -210,6 +210,8 @@ _TINYDIR_FUNC
 int tinydir_open_subdir_n(tinydir_dir *dir, size_t i);
 
 _TINYDIR_FUNC
+int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path);
+_TINYDIR_FUNC
 void _tinydir_get_ext(tinydir_file *file);
 _TINYDIR_FUNC
 int _tinydir_file_cmp(const void *a, const void *b);
