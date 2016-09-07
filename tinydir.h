@@ -84,14 +84,26 @@ extern "C" {
 #define _tinydir_strncmp strncmp
 #endif
 
-#define _TINYDIR_PATH_MAX 4096
+#if (defined _MSC_VER || defined __MINGW32__)
+#include <windows.h>
+#define PATH_MAX MAX_PATH
+#elif defined  __linux__
+#include <linux/limits.h>
+#endif
+#define _TINYDIR_PATH_MAX PATH_MAX
+
 #ifdef _MSC_VER
 /* extra chars for the "\\*" mask */
 # define _TINYDIR_PATH_EXTRA 2
 #else
 # define _TINYDIR_PATH_EXTRA 0
 #endif
+
 #define _TINYDIR_FILENAME_MAX 256
+
+#if (defined _MSC_VER || defined __MINGW32__)
+#define _TINYDIR_DRIVE_MAX 3
+#endif
 
 #ifdef _MSC_VER
 # define _TINYDIR_FUNC static __inline
@@ -626,7 +638,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 #if ((defined _MSC_VER) && (_MSC_VER >= 1400))
 		_tsplitpath_s(
 			path,
-			drive_buf, _TINYDIR_PATH_MAX,
+			drive_buf, _TINYDIR_DRIVE_MAX,
 			dir_name_buf, _TINYDIR_PATH_MAX,
 			file_name_buf, _TINYDIR_FILENAME_MAX,
 			ext_buf, sizeof _TINYDIR_FILENAME_MAX);
