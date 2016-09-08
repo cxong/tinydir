@@ -84,14 +84,26 @@ extern "C" {
 #define _tinydir_strncmp strncmp
 #endif
 
-#define _TINYDIR_PATH_MAX 4096
+#if (defined _MSC_VER || defined __MINGW32__)
+#include <windows.h>
+#define PATH_MAX MAX_PATH
+#elif defined  __linux__
+#include <linux/limits.h>
+#endif
+#define _TINYDIR_PATH_MAX PATH_MAX
+
 #ifdef _MSC_VER
 /* extra chars for the "\\*" mask */
 # define _TINYDIR_PATH_EXTRA 2
 #else
 # define _TINYDIR_PATH_EXTRA 0
 #endif
+
 #define _TINYDIR_FILENAME_MAX 256
+
+#if (defined _MSC_VER || defined __MINGW32__)
+#define _TINYDIR_DRIVE_MAX 3
+#endif
 
 #ifdef _MSC_VER
 # define _TINYDIR_FUNC static __inline
@@ -209,6 +221,8 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, size_t i);
 _TINYDIR_FUNC
 int tinydir_open_subdir_n(tinydir_dir *dir, size_t i);
 
+_TINYDIR_FUNC
+int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path);
 _TINYDIR_FUNC
 void _tinydir_get_ext(tinydir_file *file);
 _TINYDIR_FUNC
@@ -624,10 +638,10 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 #if ((defined _MSC_VER) && (_MSC_VER >= 1400))
 		_tsplitpath_s(
 			path,
-			drive_buf, sizeof drive_buf,
-			dir_name_buf, sizeof dir_name_buf,
-			file_name_buf, sizeof file_name_buf,
-			ext_buf, sizeof ext_buf);
+			drive_buf, _TINYDIR_DRIVE_MAX,
+			dir_name_buf, _TINYDIR_FILENAME_MAX,
+			file_name_buf, _TINYDIR_FILENAME_MAX,
+			ext_buf, sizeof _TINYDIR_FILENAME_MAX);
 #else
 		_tsplitpath(
 			path,
@@ -636,6 +650,15 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 			file_name_buf,
 			ext_buf);
 #endif
+
+/* _splitpath_s not work fine with only filename and widechar support */
+#ifdef _UNICODE
+		if (drive_buf[0] == L'\xFEFE')
+			drive_buf[0] = '\0';
+		if (dir_name_buf[0] == L'\xFEFE')
+			dir_name_buf[0] = '\0';
+#endif
+
 	if (errno)
 	{
 		errno = EINVAL;
@@ -643,11 +666,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	}
 	/* Emulate the behavior of dirname by returning "." for dir name if it's
 	empty */
-#if ((defined _MSC_VER || defined __MINGW32__) && (defined UNICODE))
-	if (drive_buf[0] == '\0' && drive_buf[1] == '\0' && dir_name_buf[0] == '\0' && dir_name_buf[1] == '\0')
-#else
 	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
-#endif
 	{
 		_tinydir_strcpy(dir_name_buf, TINYDIR_STRING("."));
 	}
