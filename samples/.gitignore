@@ -32,6 +32,7 @@ Win32/
 *.vcxproj.user
 *.vcxproj
 *.vcxproj.filters
+*.VC.*
 *.sln
 
 # Linux

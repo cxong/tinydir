@@ -115,6 +115,9 @@ extern "C" {
 # define _TINYDIR_FUNC static inline
 #endif
 
+/* readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) */
+#ifdef TINYDIR_USE_READDIR_R
+
 /* readdir_r is a POSIX-only function, and may not be available under various
  * environments/settings, e.g. MinGW. Use readdir fallback */
 #if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE ||\
@@ -137,6 +140,8 @@ extern "C" {
 #if defined __MINGW32__ || !defined _TINYDIR_HAS_READDIR_R ||\
 	!(defined _TINYDIR_USE_FPATHCONF || defined NAME_MAX)
 # define _TINYDIR_USE_READDIR
+#endif
+
 #endif
 
 /* MINGW32 has two versions of dirent, ASCII and UNICODE*/

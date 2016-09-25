@@ -25,6 +25,14 @@ endif()
 # Add tests
 enable_testing()
 
+add_library(util util.c util.h)
+
 add_executable(file_open_test file_open_test.c)
-target_link_libraries(file_open_test cbehave)
+target_link_libraries(file_open_test util cbehave)
 add_test(NAME file_open_test COMMAND file_open_test)
+
+if(MSVC)
+add_executable(windows_unicode_test windows_unicode_test.c)
+target_link_libraries(windows_unicode_test cbehave)
+add_test(NAME windows_unicode_test COMMAND windows_unicode_test)
+endif()
