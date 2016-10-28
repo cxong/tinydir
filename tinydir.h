@@ -142,6 +142,9 @@ extern "C" {
 # define _TINYDIR_USE_READDIR
 #endif
 
+/* Use readdir by default */
+#else
+# define _TINYDIR_USE_READDIR
 #endif
 
 /* MINGW32 has two versions of dirent, ASCII and UNICODE*/
