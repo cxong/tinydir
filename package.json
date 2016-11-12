@@ -12,6 +12,6 @@
   "src": [
     "tinydir.h"
   ],
-  "version": "1.2.0",
+  "version": "1.2",
   "repo": "cxong/tinydir"
 }
