@@ -9,6 +9,9 @@
     "reader",
     "filesystem"
   ],
+  "src": [
+    "tinydir.h"
+  ],
   "version": "1.2.0",
   "repo": "cxong/tinydir"
 }
