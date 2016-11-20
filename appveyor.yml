@@ -1,0 +1,18 @@
+version: 1.2
+
+# Only build if file changes here
+only_commits:
+  files:
+    - samples/
+    - tests/
+    - tinydir.h
+
+image: Visual Studio 2015
+
+build:
+  project: samples/tinydir.sln
+  project: tests/tinydir_tests.sln
+
+before_build:
+  - cd samples && cmake -G "Visual Studio 2015" . && cd -
+  - cd tests && cmake -G "Visual Studio 2015" . && cd -
