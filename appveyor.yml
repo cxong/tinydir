@@ -1,5 +1,10 @@
 version: 1.2
 
+environment:
+  matrix:
+    - project_name: samples/tinydir.sln
+    - project_name: tests/tinydir_tests.sln
+
 # Only build if file changes here
 only_commits:
   files:
@@ -10,8 +15,7 @@ only_commits:
 image: Visual Studio 2015
 
 build:
-  project: samples/tinydir.sln
-  project: tests/tinydir_tests.sln
+  project: $(project_name)
 
 before_build:
   - cd samples && cmake -G "Visual Studio 2015" . && cd -
