@@ -18,5 +18,5 @@ build:
   project: $(project_name)
 
 before_build:
-  - cd samples && cmake -G "Visual Studio 2015" . && cd -
-  - cd tests && cmake -G "Visual Studio 2015" . && cd -
+  - cd samples && cmake -G "Visual Studio 14 2015" . && cd -
+  - cd tests && cmake -G "Visual Studio 14 2015" . && cd -
