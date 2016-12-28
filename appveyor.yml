@@ -21,3 +21,6 @@ build:
 before_build:
   - cd samples && cmake -G "Visual Studio 14 2015" . && cd ..
   - cd tests && cmake -G "Visual Studio 14 2015" . && cd ..
+
+after_build:
+  - cd tests && ctest --output-on-failure . && cd ..
