@@ -24,6 +24,6 @@ before_build:
   - cd tests && cmake -G "Visual Studio 14 2015" . && cd ..
 
 after_build:
-  - if [%project_name%] == ["tests/tinydir_tests.sln"] (
+  - if [$(project_name)] == [tests/tinydir_tests.sln] (
         cd tests && ctest --output-on-failure -C Release . && cd ..
     )
