@@ -14,6 +14,8 @@ only_commits:
     - tinydir.h
 
 image: Visual Studio 2015
+platform: x64
+configuration: Release
 
 build:
   project: $(project_name)
@@ -23,4 +25,4 @@ before_build:
   - cd tests && cmake -G "Visual Studio 14 2015" . && cd ..
 
 after_build:
-  - cd tests && ctest --output-on-failure . && cd ..
+  - cd tests && ctest --output-on-failure -c Release . && cd ..
