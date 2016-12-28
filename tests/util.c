@@ -3,6 +3,9 @@
 #ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#else
+#include <stdlib.h>
+#include <unistd.h>
 #endif
 
 
@@ -20,8 +23,6 @@ void make_temp_file(const char *prefix, char *out)
 		fclose(fopen(out, "w"));
 	}
 #else
-	#include <stdlib.h>
-	#include <unistd.h>
 	sprintf(out, "%sXXXXXX", prefix);
 	close(mkstemp(out));
 #endif
