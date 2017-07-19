@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013-2016, tinydir authors:
+Copyright (c) 2013-2017, tinydir authors:
 - Cong Xu
 - Lautis Sun
 - Baudouin Feildel
@@ -628,7 +628,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	_tinydir_char_t *dir_name;
 	_tinydir_char_t *base_name;
 #if (defined _MSC_VER || defined __MINGW32__)
-	_tinydir_char_t drive_buf[_TINYDIR_DRIVE_MAX];
+	_tinydir_char_t drive_buf[_TINYDIR_PATH_MAX];
 	_tinydir_char_t ext_buf[_TINYDIR_FILENAME_MAX];
 #endif
 
