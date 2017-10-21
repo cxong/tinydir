@@ -65,32 +65,40 @@ extern "C" {
 
 /* Windows UNICODE wide character support */
 #if defined _MSC_VER || defined __MINGW32__
-#define _tinydir_char_t TCHAR
-#define TINYDIR_STRING(s) _TEXT(s)
-#define _tinydir_strlen _tcslen
-#define _tinydir_strcpy _tcscpy
-#define _tinydir_strcat _tcscat
-#define _tinydir_strcmp _tcscmp
-#define _tinydir_strrchr _tcsrchr
-#define _tinydir_strncmp _tcsncmp
+# define _tinydir_char_t TCHAR
+# define TINYDIR_STRING(s) _TEXT(s)
+# define _tinydir_strlen _tcslen
+# define _tinydir_strcpy _tcscpy
+# define _tinydir_strcat _tcscat
+# define _tinydir_strcmp _tcscmp
+# define _tinydir_strrchr _tcsrchr
+# define _tinydir_strncmp _tcsncmp
 #else
-#define _tinydir_char_t char
-#define TINYDIR_STRING(s) s
-#define _tinydir_strlen strlen
-#define _tinydir_strcpy strcpy
-#define _tinydir_strcat strcat
-#define _tinydir_strcmp strcmp
-#define _tinydir_strrchr strrchr
-#define _tinydir_strncmp strncmp
+# define _tinydir_char_t char
+# define TINYDIR_STRING(s) s
+# define _tinydir_strlen strlen
+# define _tinydir_strcpy strcpy
+# define _tinydir_strcat strcat
+# define _tinydir_strcmp strcmp
+# define _tinydir_strrchr strrchr
+# define _tinydir_strncmp strncmp
 #endif
 
 #if (defined _MSC_VER || defined __MINGW32__)
-#include <windows.h>
-#define _TINYDIR_PATH_MAX MAX_PATH
+# include <windows.h>
+# define _TINYDIR_PATH_MAX MAX_PATH
 #elif defined  __linux__
-#include <linux/limits.h>
-#define _TINYDIR_PATH_MAX PATH_MAX
-#else
+# include <limits.h>
+# define _TINYDIR_PATH_MAX PATH_MAX
+#elif defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+# include <sys/param.h>
+# if defined(BSD)
+#  include <limits.h>
+#  define _TINYDIR_PATH_MAX PATH_MAX
+# endif
+#endif
+
+#ifndef _TINYDIR_PATH_MAX
 #define _TINYDIR_PATH_MAX 4096
 #endif
 
