@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013-2017, tinydir authors:
+Copyright (c) 2013-2018, tinydir authors:
 - Cong Xu
 - Lautis Sun
 - Baudouin Feildel
@@ -365,7 +365,7 @@ int tinydir_open_sorted(tinydir_dir *dir, const _tinydir_char_t *path)
 	}
 	tinydir_close(dir);
 
-	if (tinydir_open(dir, path) == -1)
+	if (n_files == 0 || tinydir_open(dir, path) == -1)
 	{
 		return -1;
 	}
