@@ -664,10 +664,6 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 			dir_name_buf, _TINYDIR_FILENAME_MAX,
 			file_name_buf, _TINYDIR_FILENAME_MAX,
 			ext_buf, _TINYDIR_FILENAME_MAX);
-		if (errno)
-		{
-			return -1;
-		}
 #else
 		_tsplitpath(
 			path,
@@ -675,13 +671,12 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 			dir_name_buf,
 			file_name_buf,
 			ext_buf);
-
-		if (errno)
-		{
-			errno = EINVAL;
-			return -1;
-		}
 #endif
+
+if (errno)
+{
+	return -1;
+}
 
 /* _splitpath_s not work fine with only filename and widechar support */
 #ifdef _UNICODE
