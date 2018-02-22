@@ -658,7 +658,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	/* Get the parent path */
 #if (defined _MSC_VER || defined __MINGW32__)
 #if ((defined _MSC_VER) && (_MSC_VER >= 1400))
-		_tsplitpath_s(
+		errno = _tsplitpath_s(
 			path,
 			drive_buf, _TINYDIR_DRIVE_MAX,
 			dir_name_buf, _TINYDIR_FILENAME_MAX,
@@ -673,6 +673,11 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 			ext_buf);
 #endif
 
+if (errno)
+{
+	return -1;
+}
+
 /* _splitpath_s not work fine with only filename and widechar support */
 #ifdef _UNICODE
 		if (drive_buf[0] == L'\xFEFE')
@@ -681,11 +686,6 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 			dir_name_buf[0] = '\0';
 #endif
 
-	if (errno)
-	{
-		errno = EINVAL;
-		return -1;
-	}
 	/* Emulate the behavior of dirname by returning "." for dir name if it's
 	empty */
 	if (drive_buf[0] == '\0' && dir_name_buf[0] == '\0')
