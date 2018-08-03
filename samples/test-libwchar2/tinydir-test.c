@@ -3,7 +3,7 @@
     Example use TinyDir and libwchar2
     This code to Linux only, not run in WINxx
     Origin TinyDir: https://github.com/cxong/tinydir
-    gcc -E -fshort-wchar -I../doxymd/lib/include tinydir-test.c
+    gcc -E -fshort-wchar -I../../include tinydir-test.c
 */
 
 #include <stdio.h>
