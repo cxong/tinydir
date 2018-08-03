@@ -10,15 +10,18 @@ int main(void) {
 
   FILE *fp;
   tinydir_dir dir;
-  tinydir_open(&dir, TINYDIR_STRING("/path/to/dir"));
+  tinydir_open(&dir, TINYDIR_STRING("."));
 
   fp = 
 #if ((defined _WIN32) && (defined _UNICODE))
-	_wfopen(
+    _wfopen(
 #else
-	fopen(
+    fopen(
 #endif
-		TINYDIR_STRING("/file/to/output"), TINYDIR_STRING("wb"));
+	TINYDIR_STRING("file-to-output"), TINYDIR_STRING("wb"));
+
+    if (!fp)
+        return 0;
 
 #if ((defined _WIN32) && (defined _UNICODE))
   fwrite(bom, 1, 2, fp);
