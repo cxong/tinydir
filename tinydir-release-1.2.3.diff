@@ -1,5 +1,5 @@
 --- tinydir-orig.h	2018-08-03 10:29:32.000000000 +0400
-+++ tinydir.h	2018-08-03 11:06:37.000000000 +0400
++++ tinydir.h	2018-08-03 12:53:51.000000000 +0400
 @@ -1,5 +1,6 @@
  /*
  Copyright (c) 2013-2018, tinydir authors:
@@ -7,7 +7,19 @@
  - Cong Xu
  - Lautis Sun
  - Baudouin Feildel
-@@ -33,190 +34,274 @@
+@@ -26,6 +27,11 @@
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
++
++/*
++    Now, support libwchar2 - https://github.com/ClnViewer/LibWchar2
++ */
++
+ #ifndef TINYDIR_H
+ #define TINYDIR_H
+ 
+@@ -33,190 +39,276 @@
  extern "C" {
  #endif
  
@@ -135,14 +147,41 @@
 -#if (defined _MSC_VER || defined __MINGW32__)
 -#define _TINYDIR_DRIVE_MAX 3
 -#endif
-+#if defined(OS_WIN)
- 
+-
 -#ifdef _MSC_VER
 -# define _TINYDIR_FUNC static __inline
 -#elif !defined __STDC_VERSION__ || __STDC_VERSION__ < 199901L
 -# define _TINYDIR_FUNC static __inline__
 -#else
 -# define _TINYDIR_FUNC static inline
+-#endif
+-
+-/* readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) */
+-#ifdef TINYDIR_USE_READDIR_R
++#if defined(OS_WIN)
+ 
+-/* readdir_r is a POSIX-only function, and may not be available under various
+- * environments/settings, e.g. MinGW. Use readdir fallback */
+-#if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE ||\
+-	_POSIX_SOURCE
+-# define _TINYDIR_HAS_READDIR_R
+-#endif
+-#if _POSIX_C_SOURCE >= 200112L
+-# define _TINYDIR_HAS_FPATHCONF
+-# include <unistd.h>
+-#endif
+-#if _BSD_SOURCE || _SVID_SOURCE || \
+-	(_POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700)
+-# define _TINYDIR_HAS_DIRFD
+-# include <sys/types.h>
+-#endif
+-#if defined _TINYDIR_HAS_FPATHCONF && defined _TINYDIR_HAS_DIRFD &&\
+-	defined _PC_NAME_MAX
+-# define _TINYDIR_USE_FPATHCONF
+-#endif
+-#if defined __MINGW32__ || !defined _TINYDIR_HAS_READDIR_R ||\
+-	!(defined _TINYDIR_USE_FPATHCONF || defined NAME_MAX)
+-# define _TINYDIR_USE_READDIR
 -#endif
 +#  if defined(BUILD_MSVC)
 +#     define WIN32_LEAN_AND_MEAN
@@ -196,39 +235,12 @@
 +#  define _TINYDIR_PATH_MAX MAX_PATH
 +#  define _TINYDIR_DRIVE_MAX 3
  
--/* readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) */
--#ifdef TINYDIR_USE_READDIR_R
-+#elif defined(OS_LIN)
- 
--/* readdir_r is a POSIX-only function, and may not be available under various
-- * environments/settings, e.g. MinGW. Use readdir fallback */
--#if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE ||\
--	_POSIX_SOURCE
--# define _TINYDIR_HAS_READDIR_R
--#endif
--#if _POSIX_C_SOURCE >= 200112L
--# define _TINYDIR_HAS_FPATHCONF
--# include <unistd.h>
--#endif
--#if _BSD_SOURCE || _SVID_SOURCE || \
--	(_POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700)
--# define _TINYDIR_HAS_DIRFD
--# include <sys/types.h>
--#endif
--#if defined _TINYDIR_HAS_FPATHCONF && defined _TINYDIR_HAS_DIRFD &&\
--	defined _PC_NAME_MAX
--# define _TINYDIR_USE_FPATHCONF
--#endif
--#if defined __MINGW32__ || !defined _TINYDIR_HAS_READDIR_R ||\
--	!(defined _TINYDIR_USE_FPATHCONF || defined NAME_MAX)
--# define _TINYDIR_USE_READDIR
--#endif
--
 -/* Use readdir by default */
 -#else
 -# define _TINYDIR_USE_READDIR
 -#endif
--
++#elif defined(OS_LIN)
+ 
 -/* MINGW32 has two versions of dirent, ASCII and UNICODE*/
 -#ifndef _MSC_VER
 -#if (defined __MINGW32__) && (defined _UNICODE)
@@ -383,6 +395,8 @@
 -	#define _TINYDIR_MALLOC(_size) malloc(_size)
 -	#define _TINYDIR_FREE(_ptr)    free(_ptr)
 -#endif /* !defined(_TINYDIR_MALLOC) */
++/* Public interface */
++#define TINYDIR_STRING _TINYDIR_STRING
  
  typedef struct tinydir_file
  {
@@ -441,7 +455,7 @@
  #endif
  } tinydir_dir;
  
-@@ -245,11 +330,11 @@
+@@ -245,11 +337,11 @@
  void _tinydir_get_ext(tinydir_file *file);
  _TINYDIR_FUNC
  int _tinydir_file_cmp(const void *a, const void *b);
@@ -456,7 +470,7 @@
  #endif
  
  
-@@ -258,514 +343,547 @@
+@@ -258,514 +350,547 @@
  _TINYDIR_FUNC
  int tinydir_open(tinydir_dir *dir, const _tinydir_char_t *path)
  {
@@ -1445,7 +1459,7 @@
  /*
  The following authored by Ben Hutchings <ben@decadent.org.uk>
  from https://womble.decadent.org.uk/readdir_r-advisory.html
-@@ -777,40 +895,44 @@
+@@ -777,40 +902,44 @@
  * This code does not trust values of NAME_MAX that are less than    *
  * 255, since some systems (including at least HP-UX) incorrectly    *
  * define it to be a smaller value.                                  */

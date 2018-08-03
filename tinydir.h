@@ -27,6 +27,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+/*
+    Now, support libwchar2 - https://github.com/ClnViewer/LibWchar2
+ */
+
 #ifndef TINYDIR_H
 #define TINYDIR_H
 
@@ -274,6 +279,8 @@ extern "C" {
 #   define _TINYDIR_FREE(x)   free(x)
 #endif
 
+/* Public interface */
+#define TINYDIR_STRING _TINYDIR_STRING
 
 typedef struct tinydir_file
 {
