@@ -45,7 +45,9 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #ifdef _MSC_VER
-# define WIN32_LEAN_AND_MEAN
+# ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
+# endif
 # include <windows.h>
 # include <tchar.h>
 # pragma warning(push)
@@ -89,7 +91,9 @@ extern "C" {
 # define _TINYDIR_PATH_MAX MAX_PATH
 #elif defined  __linux__
 # include <limits.h>
-# define _TINYDIR_PATH_MAX PATH_MAX
+# ifdef PATH_MAX
+#  define _TINYDIR_PATH_MAX PATH_MAX
+# endif
 #elif defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 # include <sys/param.h>
 # if defined(BSD)
