@@ -98,7 +98,9 @@ extern "C" {
 # include <sys/param.h>
 # if defined(BSD)
 #  include <limits.h>
-#  define _TINYDIR_PATH_MAX PATH_MAX
+#  ifdef PATH_MAX
+#   define _TINYDIR_PATH_MAX PATH_MAX
+#  endif
 # endif
 #endif
 
