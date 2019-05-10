@@ -498,6 +498,7 @@ int tinydir_next(tinydir_dir *dir)
 _TINYDIR_FUNC
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 {
+	const _tinydir_char_t *filename;
 	if (dir == NULL || file == NULL)
 	{
 		errno = EINVAL;
@@ -512,27 +513,21 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 		errno = ENOENT;
 		return -1;
 	}
-	if (_tinydir_strlen(dir->path) +
-		_tinydir_strlen(
+	filename =
 #ifdef _MSC_VER
-			dir->_f.cFileName
+		dir->_f.cFileName;
 #else
-			dir->_e->d_name
+		dir->_e->d_name;
 #endif
-		) + 1 + _TINYDIR_PATH_EXTRA >=
+	if (_tinydir_strlen(dir->path) +
+		_tinydir_strlen(filename) + 1 + _TINYDIR_PATH_EXTRA >=
 		_TINYDIR_PATH_MAX)
 	{
 		/* the path for the file will be too long */
 		errno = ENAMETOOLONG;
 		return -1;
 	}
-	if (_tinydir_strlen(
-#ifdef _MSC_VER
-			dir->_f.cFileName
-#else
-			dir->_e->d_name
-#endif
-		) >= _TINYDIR_FILENAME_MAX)
+	if (_tinydir_strlen(filename) >= _TINYDIR_FILENAME_MAX)
 	{
 		errno = ENAMETOOLONG;
 		return -1;
@@ -540,14 +535,8 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 
 	_tinydir_strcpy(file->path, dir->path);
 	_tinydir_strcat(file->path, TINYDIR_STRING("/"));
-	_tinydir_strcpy(file->name,
-#ifdef _MSC_VER
-		dir->_f.cFileName
-#else
-		dir->_e->d_name
-#endif
-	);
-	_tinydir_strcat(file->path, file->name);
+	_tinydir_strcpy(file->name, filename);
+	_tinydir_strcat(file->path, filename);
 #ifndef _MSC_VER
 #ifdef __MINGW32__
 	if (_tstat(
