@@ -534,7 +534,8 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 	}
 
 	_tinydir_strcpy(file->path, dir->path);
-	_tinydir_strcat(file->path, TINYDIR_STRING("/"));
+	if (_tinydir_strcmp(dir->path, TINYDIR_STRING("/")) != 0)
+		_tinydir_strcat(file->path, TINYDIR_STRING("/"));
 	_tinydir_strcpy(file->name, filename);
 	_tinydir_strcat(file->path, filename);
 #ifndef _MSC_VER
@@ -701,11 +702,15 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	_tinydir_strcpy(dir_name_buf, path);
 	dir_name = dirname(dir_name_buf);
 	_tinydir_strcpy(file_name_buf, path);
-	base_name =basename(file_name_buf);
+	base_name = basename(file_name_buf);
 #endif
 
 	/* Special case: if the path is a root dir, open the parent dir as the file */
+#if (defined _MSC_VER || defined __MINGW32__)
 	if (_tinydir_strlen(base_name) == 0)
+#else
+	if ((_tinydir_strcmp(base_name, TINYDIR_STRING("/"))) == 0)
+#endif
 	{
 		memset(file, 0, sizeof * file);
 		file->is_dir = 1;
