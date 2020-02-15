@@ -24,7 +24,9 @@ CMakeCache.txt
 cmake_install.cmake
 
 # Visual Studio
+.vs/
 Debug/
+out/
 Win32/
 *.opensdf
 *.sdf
