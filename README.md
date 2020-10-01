@@ -60,7 +60,7 @@ See the `/samples` folder for more examples, including an interactive command-li
 Language
 ========
 
-ANSI C, or C90.
+ANSI C, or C90,C++.
 
 Platforms
 =========
