@@ -23,6 +23,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Install GCC
+      uses: egor-tensin/setup-gcc@v1
 
     - name: Build
       env:
