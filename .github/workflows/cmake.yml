@@ -1,0 +1,44 @@
+name: CMake
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            CC: clang
+          - os: ubuntu-latest
+            CC: gcc
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      env:
+        CC: ${{ matrix.CC }}
+      run: |
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} tests
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+
+    - name: Build (samples)
+      env:
+        CC: ${{ matrix.CC }}
+      run: |
+        rm -rf ${{github.workspace}}/build
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} samples
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
