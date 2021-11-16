@@ -127,6 +127,9 @@ extern "C" {
 # define _TINYDIR_FUNC static __inline__
 #elif defined(__cplusplus)
 # define _TINYDIR_FUNC static inline
+#elif defined(__GNUC__)
+/* Suppress unused function warning */
+# define _TINYDIR_FUNC __attribute__((unused)) static
 #else
 # define _TINYDIR_FUNC static
 #endif
