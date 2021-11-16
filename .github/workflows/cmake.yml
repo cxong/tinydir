@@ -20,7 +20,7 @@ jobs:
             CC: clang
           - os: ubuntu-latest
             CC: gcc
-            gcc-version: 11
+            gcc_version: 11
           - os: ubuntu-latest
             CC: gcc
             gcc_version: latest
