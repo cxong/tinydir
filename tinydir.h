@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013-2019, tinydir authors:
+Copyright (c) 2013-2021, tinydir authors:
 - Cong Xu
 - Lautis Sun
 - Baudouin Feildel
@@ -125,8 +125,10 @@ extern "C" {
 # define _TINYDIR_FUNC static __inline
 #elif !defined __STDC_VERSION__ || __STDC_VERSION__ < 199901L
 # define _TINYDIR_FUNC static __inline__
-#else
+#elif defined(__cplusplus)
 # define _TINYDIR_FUNC static inline
+#else
+# define _TINYDIR_FUNC static
 #endif
 
 /* readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) */
