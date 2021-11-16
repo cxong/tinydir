@@ -20,6 +20,10 @@ jobs:
             CC: clang
           - os: ubuntu-latest
             CC: gcc
+            gcc-version: 11
+          - os: ubuntu-latest
+            CC: gcc
+            gcc_version: latest
 
     steps:
     - uses: actions/checkout@v2
@@ -27,6 +31,8 @@ jobs:
     - name: Install GCC
       if: matrix.CC == 'gcc'
       uses: egor-tensin/setup-gcc@v1
+      with:
+        version: ${{ matrix.gcc_version }}
 
     - name: Build
       env:
