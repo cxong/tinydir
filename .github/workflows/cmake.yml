@@ -12,15 +12,12 @@ jobs:
     strategy:
       matrix:
         build_type: [Release, Debug]
+        os: [macos-latest, ubuntu-latest]
+        CC: [clang, gcc]
         include:
-          - os: macos-latest
-            CC: clang
           - os: ubuntu-latest
             CC: gcc
             gcc_version: 11
-          - os: ubuntu-latest
-            CC: gcc
-            gcc_version: latest
 
     steps:
     - uses: actions/checkout@v2
