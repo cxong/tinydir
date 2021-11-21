@@ -10,7 +10,7 @@ public:
     TinyDir(const std::string& path);
     ~TinyDir();
     std::string baseName() const;
-    std::list<std::string> listDir(bool filesOnly);
+    std::list<std::string> listDir();
 
 private:
     tinydir_dir* dir;
@@ -38,7 +38,7 @@ std::string TinyDir::baseName() const {
     return path.substr(lastSlash + 1);
 }
 
-std::list<std::string> TinyDir::listDir(bool filesOnly)
+std::list<std::string> TinyDir::listDir()
 {
     std::list<std::string> files;
 
