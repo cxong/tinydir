@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <stdexcept>
 #include <string>
 
@@ -8,7 +9,9 @@ class TinyDir {
 public:
     TinyDir(const std::string& path);
     ~TinyDir();
-    std::string BaseName() const;
+    std::string baseName() const;
+    std::list<std::string> listDir(bool filesOnly) const;
+
 private:
     tinydir_dir* dir;
 };
@@ -22,10 +25,11 @@ TinyDir::TinyDir(const std::string& path) : dir(new tinydir_dir) {
 }
 
 TinyDir::~TinyDir() {
+    tinydir_close(dir);
     delete dir;
 }
 
-std::string TinyDir::BaseName() const {
+std::string TinyDir::baseName() const {
     const std::string path{dir->path};
     auto lastSlash = path.find_last_of("/\\");
     if (lastSlash == std::string::npos) {
@@ -34,13 +38,30 @@ std::string TinyDir::BaseName() const {
     return path.substr(lastSlash + 1);
 }
 
+std::list<std::string> TinyDir::listDir(bool filesOnly)
+{
+    std::list<std::string> files;
+
+    while (dir->has_next)
+    {
+        tinydir_file file;                                
+        tinydir_readfile(dir, &file);
+
+        files.push_back(std::string{dir->path} + "/" + file.name);
+
+        tinydir_next(dir);
+    }
+
+    return files;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: cpp_sample filename\n";
         return 1;
     }
     TinyDir td{argv[1]};
-    std::cout << "Basename is " << td.BaseName() << "\n";
+    std::cout << "Basename is " << td.baseName() << "\n";
     return 0;
 }
 
