@@ -14,9 +14,11 @@ jobs:
         build_type: [Release, Debug]
         os: [macos-latest, ubuntu-latest]
         CC: [clang, gcc]
-        include:
-          - os: ubuntu-latest
+        gcc_version: [latest, 11]
+        exclude:
+          - os: macos-latest
             CC: gcc
+          - CC: clang
             gcc_version: 11
 
     steps:
