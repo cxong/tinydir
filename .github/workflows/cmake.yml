@@ -6,24 +6,20 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include:
+        build_type: [Release, Debug]
+        os: [macos-latest, ubuntu-latest]
+        CC: [clang, gcc]
+        gcc_version: [latest, 11]
+        exclude:
           - os: macos-latest
-            CC: clang
-          - os: ubuntu-latest
             CC: gcc
+          - CC: clang
             gcc_version: 11
-          - os: ubuntu-latest
-            CC: gcc
-            gcc_version: latest
 
     steps:
     - uses: actions/checkout@v2
@@ -38,8 +34,8 @@ jobs:
       env:
         CC: ${{ matrix.CC }}
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} tests
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON tests
+        cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
 
     - name: Test
       working-directory: ${{github.workspace}}/build
@@ -50,5 +46,5 @@ jobs:
         CC: ${{ matrix.CC }}
       run: |
         rm -rf ${{github.workspace}}/build
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} samples
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON samples
+        cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
