@@ -18,12 +18,19 @@ jobs:
         include:
           - os: macos-latest
             CC: clang
+            cflags: ''
           - os: ubuntu-latest
             CC: gcc
             gcc_version: 11
+            cflags: ''
+          - os: ubuntu-latest
+            CC: gcc
+            gcc_version: 11
+            cflags: -O3
           - os: ubuntu-latest
             CC: gcc
             gcc_version: latest
+            cflags: ''
 
     steps:
     - uses: actions/checkout@v2
@@ -37,6 +44,7 @@ jobs:
     - name: Build
       env:
         CC: ${{ matrix.CC }}
+        CFLAGS: ${{ matrix.cflags }}
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} tests
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
