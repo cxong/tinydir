@@ -44,9 +44,8 @@ jobs:
     - name: Build
       env:
         CC: ${{ matrix.CC }}
-        CFLAGS: ${{ matrix.cflags }}
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_FLAGS=${{env.cflags}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON tests
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_FLAGS=${{matrix.cflags}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON tests
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
@@ -58,5 +57,5 @@ jobs:
         CC: ${{ matrix.CC }}
       run: |
         rm -rf ${{github.workspace}}/build
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_FLAGS=${{env.cflags}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON samples
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_FLAGS=${{matrix.cflags}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON samples
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
