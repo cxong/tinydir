@@ -55,6 +55,5 @@ jobs:
       env:
         CC: ${{ matrix.CC }}
       run: |
-        rm -rf ${{github.workspace}}/build
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON samples
-        cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
+        cmake -B ${{github.workspace}}/build_samples -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON samples
+        cmake --build ${{github.workspace}}/build_samples --config ${{matrix.build_type}}
