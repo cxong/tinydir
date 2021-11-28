@@ -12,12 +12,22 @@ jobs:
     strategy:
       matrix:
         build_type: [Release, Debug]
-        os: [macos-latest, ubuntu-latest]
-        CC: [clang, gcc]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        CC: [clang, gcc, cl]
         gcc_version: [latest, 11]
         exclude:
+          # macos+clang only
           - os: macos-latest
             CC: gcc
+          - os: macos-latest
+            CC: cl
+          # cl for windows only
+          - os: ubuntu-latest
+            CC: cl
+          - os: windows-latest
+            CC: gcc
+          - os: windows-latest
+            CC: clang
           - CC: clang
             gcc_version: 11
 
