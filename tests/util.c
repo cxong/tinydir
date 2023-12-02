@@ -43,6 +43,9 @@ void make_temp_dir(const char *prefix, char *out)
 	}
 #else
 	sprintf(out, "%sXXXXXX", prefix);
-	(void)mkdtemp(out);
+	if (mkdtemp(out) == NULL)
+	{
+		out[0] = '\0';
+	}
 #endif
 }
