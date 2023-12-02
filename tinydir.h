@@ -643,7 +643,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path)
 	int result = 0;
 	int found = 0;
 	_tinydir_char_t dir_name_buf[_TINYDIR_PATH_MAX];
-	_tinydir_char_t file_name_buf[_TINYDIR_FILENAME_MAX];
+	_tinydir_char_t file_name_buf[_TINYDIR_PATH_MAX];
 	_tinydir_char_t *dir_name;
 	_tinydir_char_t *base_name;
 #if (defined _MSC_VER || defined __MINGW32__)

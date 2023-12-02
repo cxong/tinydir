@@ -42,6 +42,7 @@ Makefile
 # OS X
 CMakeScripts/
 *.xcodeproj
+build/
 
 # Test files
 *.tmp
