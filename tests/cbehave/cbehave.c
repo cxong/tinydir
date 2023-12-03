@@ -242,13 +242,23 @@ void cbehave_feature_exit(void *old_state, void *state) {
 void cbehave_feature_return(const char *file, int line, int ret, void *state) {
     cbehave_state *cur = (cbehave_state*)state;
     
-    cur->failed_scenarios++;
+    if (ret == 0)
+    {
+        setColor(YELLOW);
+        printf("\t\t\t%s:%d: Skipping feature due to failed assertion.\n",
+            file,
+            line);
+    }
+    else
+    {
+        cur->failed_scenarios++;
 
-    setColor(RED);
-    printf("\t\t\t%s:%d: Exception occurred, error code: %d.\n",
+        setColor(RED);
+        printf("\t\t\t%s:%d: Exception occurred, error code: %d.\n",
             file,
             line,
             ret);
+    }
     setColor(DEFAULT_COLOR);
 }
 

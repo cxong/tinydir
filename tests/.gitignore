@@ -35,6 +35,7 @@ Win32/
 *.vcxproj.filters
 *.VC.*
 *.sln
+.vs/
 
 # Linux
 Makefile
