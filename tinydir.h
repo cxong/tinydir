@@ -134,6 +134,16 @@ extern "C" {
 # define _TINYDIR_FUNC static
 #endif
 
+#if defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+#ifdef _MSC_VER
+# define _TINYDIR_CDECL __cdecl
+#else
+# define _TINYDIR_CDECL __attribute__((cdecl))
+#endif
+#else
+# define _TINYDIR_CDECL
+#endif
+
 /* readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) */
 #ifdef TINYDIR_USE_READDIR_R
 
@@ -255,7 +265,7 @@ int tinydir_file_open(tinydir_file *file, const _tinydir_char_t *path);
 _TINYDIR_FUNC
 void _tinydir_get_ext(tinydir_file *file);
 _TINYDIR_FUNC
-int _tinydir_file_cmp(const void *a, const void *b);
+int _TINYDIR_CDECL _tinydir_file_cmp(const void *a, const void *b);
 #ifndef _MSC_VER
 #ifndef _TINYDIR_USE_READDIR
 _TINYDIR_FUNC
@@ -775,7 +785,7 @@ void _tinydir_get_ext(tinydir_file *file)
 }
 
 _TINYDIR_FUNC
-int _tinydir_file_cmp(const void *a, const void *b)
+int _TINYDIR_CDECL _tinydir_file_cmp(const void *a, const void *b)
 {
 	const tinydir_file *fa = (const tinydir_file *)a;
 	const tinydir_file *fb = (const tinydir_file *)b;
